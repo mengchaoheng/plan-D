@@ -262,22 +262,13 @@ T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
 ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
 V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
 Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
-Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
-Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_i);
-Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
 beta=atan2((v-D_y),(u_-D_x));%侧滑角[-pi/2,pi/2]
 if Amplitude<1e-05
     alpha=0; 
 else
     alpha=acos(-(w-D_z)/Amplitude);%迎角[0,pi]
 end
-% if alpha>3.141
-%     alpha=3.14;
-% elseif alpha<0
-%     alpha=0;
-% end
 alpha=Constrain(alpha,0,pi);
-
 
 
 epsilon_m=interp1(e_m_X,e_m_Y,alpha);
@@ -290,6 +281,10 @@ k_ra=interp1(k_ra_X,k_ra_Y,alpha);
 r_m=interp1(r_m_X,r_m_Y,alpha);
 %------------------------------------------------------------
 
+
+Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
+Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_i);
+Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
 %==========计算4个舵面衰减因子=============================
 %侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
 
