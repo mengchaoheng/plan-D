@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 2;
-sizes.NumInputs      = 17;
+sizes.NumInputs      = 20;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -231,57 +231,34 @@ sys = [];
 %
 function sys=mdlOutputs(t,x,u)
 %--------------------------------------------------------------------------------
+c1=u(1);
+c2=u(2);
+c3=u(3);
+c4=u(4);
 c=[c1;c2;c3;c4];
-dx=zeros(12,1);
-X=x(1);
-Y=x(2);
-Z=x(3);
-P=[X;Y;Z];
-u_=x(4);
-v=x(5);
-w=x(6);
-V_b=[u_;v;w];
-Roll=x(7);
-Pitch=x(8);
-Yaw=x(9);
-p=x(10);
-q=x(11);
-r=x(12);
-W=[p;q;r];
-Rn2b=Rn2bf(Roll,Pitch,Yaw);
-Rb2n=Rn2b';
-V_n=Rb2n*V_b;
-Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
-   0        cos(Roll)               -sin(Roll);
-   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
+speed=u(5);
+u_=u(6);
+v=u(7);
+w=u(8);
+D_x=u(9);
+D_y=u(10);
+D_z=u(11);
+beta=u(12);
+epsilon_m=u(13);
+epsilon_p=u(14);
+r_sm=u(15);
+k_rs=u(16);
+k_as=u(17);
+k_ac=u(18);
+k_ra=u(19);
+r_m=u(20);
 %------------------------------------计算合力F-----------------------------------------------
-
-
 V_c= -(w-D_z);
 T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
 ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
 V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
 Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
-beta=atan2((v-D_y),(u_-D_x));%侧滑角[-pi/2,pi/2]
-if Amplitude<1e-05
-    alpha=0; 
-else
-    alpha=acos(-(w-D_z)/Amplitude);%迎角[0,pi]
-end
-alpha=Constrain(alpha,0,pi);
-
-
-epsilon_m=interp1(e_m_X,e_m_Y,alpha);
-epsilon_p=interp1(e_p_X,e_p_Y,alpha);
-r_sm=interp1(r_sm_X,r_sm_Y,alpha);
-k_rs=interp1(k_rs_X,k_rs_Y,alpha);
-k_as=interp1(k_as_X,k_as_Y,alpha);
-k_ac=interp1(k_ac_X,k_ac_Y,alpha);
-k_ra=interp1(k_ra_X,k_ra_Y,alpha);
-r_m=interp1(r_m_X,r_m_Y,alpha);
 %------------------------------------------------------------
-
-
 Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
 Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_i);
 Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
@@ -337,8 +314,6 @@ F_cs=K_cs*(c-[c_b;c_b;c_b;c_b]);%舵面气动力
     
     F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
 F=F_T+F_cs+F_p+F_m;
-F_y=F(2);
-F_z=F(3);
 %----------------------------合力矩------------------------------------------
 %------------从飞机外侧面对舵机转轴往里看，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
