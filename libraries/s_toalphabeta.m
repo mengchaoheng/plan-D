@@ -1,4 +1,4 @@
-function [sys,x0,str,ts,simStateCompliance] = s_ductedfan(t,x,u,flag)
+function [sys,x0,str,ts,simStateCompliance] = s_toalphabeta(t,x,u,flag)
 %SFUNTMPL General MATLAB S-Function Template
 %   With MATLAB S-functions, you can define you own ordinary differential
 %   equations (ODEs), discrete system equations, and/or just about
@@ -99,42 +99,42 @@ function [sys,x0,str,ts,simStateCompliance] = s_ductedfan(t,x,u,flag)
 %
 % The following outlines the general structure of an S-function.
 %
-switch flag
+switch flag,
 
   %%%%%%%%%%%%%%%%%%
   % Initialization %
   %%%%%%%%%%%%%%%%%%
-  case 0
+  case 0,
     [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes;
 
   %%%%%%%%%%%%%%%
   % Derivatives %
   %%%%%%%%%%%%%%%
-  case 1
+  case 1,
     sys=mdlDerivatives(t,x,u);
 
   %%%%%%%%%%
   % Update %
   %%%%%%%%%%
-  case 2
+  case 2,
     sys=mdlUpdate(t,x,u);
 
   %%%%%%%%%%%
   % Outputs %
   %%%%%%%%%%%
-  case 3
+  case 3,
     sys=mdlOutputs(t,x,u);
 
   %%%%%%%%%%%%%%%%%%%%%%%
   % GetTimeOfNextVarHit %
   %%%%%%%%%%%%%%%%%%%%%%%
-  case 4
+  case 4,
     sys=mdlGetTimeOfNextVarHit(t,x,u);
 
   %%%%%%%%%%%%%
   % Terminate %
   %%%%%%%%%%%%%
-  case 9
+  case 9,
     sys=mdlTerminate(t,x,u);
 
   %%%%%%%%%%%%%%%%%%%%
@@ -165,11 +165,11 @@ function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes
 %
 sizes = simsizes;
 
-sizes.NumContStates  = 12;
+sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 12;
+sizes.NumOutputs     = 2;
 sizes.NumInputs      = 6;
-sizes.DirFeedthrough = 0;
+sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
 sys = simsizes(sizes);
@@ -177,7 +177,7 @@ sys = simsizes(sizes);
 %
 % initialize the initial conditions
 %
-x0  = [0;0;0;0;0;0;0;0;0;0;0;0];
+x0  = [];
 
 %
 % str is always an empty matrix
@@ -205,43 +205,8 @@ simStateCompliance = 'UnknownSimState';
 %=============================================================================
 %
 function sys=mdlDerivatives(t,x,u)
-g=9.788;
-G=[0;0;g];
-I_x=0.025483;
-I_y=0.025504;
-I_z=0.00562;
-I=[I_x 0 0;0 I_y 0;0 0 I_z];
-m=1.53;
-F=[u(1);u(2);u(3)];
-M=[u(4);u(5);u(6)];
-X=x(1);
-Y=x(2);
-Z=x(3);
-% P=[X;Y;Z];
-u_=x(4);
-v=x(5);
-w=x(6);
-V_b=[u_;v;w];
 
-Roll=x(7);
-Pitch=x(8);
-Yaw=x(9);
-p=x(10);
-q=x(11);
-r=x(12);
-W=[p;q;r];
-Rn2b=[          cos(Pitch)*cos(Yaw)                                     cos(Pitch)*sin(Yaw)        					 -sin(Pitch);
-	  -cos(Roll)*sin(Yaw)+sin(Roll)*sin(Pitch)*cos(Yaw)     cos(Roll)*cos(Yaw)+sin(Roll)*sin(Pitch)*sin(Yaw)        sin(Roll)*cos(Pitch);
-	  sin(Roll)*sin(Yaw)+cos(Roll)*sin(Pitch)*cos(Yaw)		-sin(Roll)*cos(Yaw)+cos(Roll)*sin(Pitch)*sin(Yaw)		cos(Roll)*cos(Pitch)];
-Rb2n=Rn2b';
-V_n=Rb2n*V_b;
-Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
-   0        cos(Roll)               -sin(Roll);
-   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
-sys(1:3) = V_n;
-sys(4:6) = ( F + Rn2b*G )./m - cross(W,V_b);
-sys(7:9) = Q*W;
-sys(10:12) =I\(M - cross(W,(I*W)));
+sys = [];
 
 % end mdlDerivatives
 
@@ -265,10 +230,37 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
+%--------------------------------------------------------------------------------
+u_=u(1);
+v=u(2);
+w=u(3);
+D_x=u(4);
+D_y=u(5);
+D_z=u(6);
+%---------------------------------------------------------------------------
+Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
+beta=atan2((v-D_y),(u_-D_x));%侧滑角[-pi/2,pi/2]
+if Amplitude<1e-05
+    alpha=0; 
+else
+    alpha=acos(-(w-D_z)/Amplitude);%迎角[0,pi]
+end
+alpha=Constrain(alpha,0,pi);
+%------------------------------------------------------------
+sys(1)=alpha;
+sys(2)=beta;
 
-sys = [x(1);x(2);x(3);x(4);x(5);x(6);x(7);x(8);x(9);x(10);x(11);x(12)];
-
+% epsilon_m=interp1(e_m_X,e_m_Y,alpha);
+% epsilon_p=interp1(e_p_X,e_p_Y,alpha);
+% r_sm=interp1(r_sm_X,r_sm_Y,alpha);
+% k_rs=interp1(k_rs_X,k_rs_Y,alpha);
+% k_as=interp1(k_as_X,k_as_Y,alpha);
+% k_ac=interp1(k_ac_X,k_ac_Y,alpha);
+% k_ra=interp1(k_ra_X,k_ra_Y,alpha);
+% r_m=interp1(r_m_X,r_m_Y,alpha);
 % end mdlOutputs
+
+
 
 %
 %=============================================================================

@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 2;
-sizes.NumInputs      = 17;
+sizes.NumInputs      = 20;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -231,30 +231,41 @@ sys = [];
 %
 function sys=mdlOutputs(t,x,u)
 %--------------------------------------------------------------------------------
-u_=u(1);
-v=u(2);
-D_x=u(3);%涵道诱导速度与来流耦合因子γ
-D_y=u(4);
-Coupling=u(5);
-Coupling_x=u(10);
-Coupling_y
-r_sm=u(11);
-k_rs=u(12);
-k_ra=u(13);
-Amplitude=u(6);
-r_m=u(17);
-V_i=u(7);
-V_c=u(8);
-T=u(9);
-k_ax=u(14);
-k_ay=u(15);
-k_az=-u(16);
-
-epsilon_p
-epsilon_m
-
+c1=u(1);
+c2=u(2);
+c3=u(3);
+c4=u(4);
+c=[c1;c2;c3;c4];
+speed=u(5);
+u_=u(6);
+v=u(7);
+w=u(8);
+D_x=u(9);
+D_y=u(10);
+D_z=u(11);
+beta=u(12);
+epsilon_m=u(13);
+epsilon_p=u(14);
+r_sm=u(15);
+k_rs=u(16);
+k_as=u(17);
+k_ac=u(18);
+k_ra=u(19);
+r_m=u(20);
 %------------------------------------计算合力F-----------------------------------------------
-% 
+V_c= -(w-D_z);
+T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
+ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
+V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
+Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
+%------------------------------------------------------------
+Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
+Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_i);
+Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
+%==========计算4个舵面衰减因子=============================
+%侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
+
+%==================1===================================
 if (u_-D_x)<0
     Attenuation1=Constrain(1-k_rs*Coupling_x,1-r_sm,1+r_sm);
 elseif (u_-D_x)>=0
@@ -278,21 +289,30 @@ if (v-D_y)<0
 elseif (v-D_y)>=0
     Attenuation4=Constrain(1-k_rs*Coupling_y,1-r_sm,1+r_sm);
 end
+%====================================================
 k_cs1=Attenuation1*d_cs;
 k_cs2=Attenuation2*d_cs;
 k_cs3=Attenuation3*d_cs;
 k_cs4=Attenuation4*d_cs;
-%------------------------------------------------------------
-
 K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
                   k_cs1   0    -k_cs3   0;
                   0      0    0        0];
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c-[c_b;c_b;c_b;c_b]);%舵面气动力
 %==================================
-r_a=k_ra*Coupling;
-F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
-F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+
+    r_a=k_ra*Coupling;
+    if (u_==D_x)&&(v==D_y) 
+        k_ax=0;
+        k_ay=0;
+    else 
+        k_ax=k_as*cos(beta);
+        k_ay=k_as*sin(beta);
+    end
+    k_az=-k_ac;
+    F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
+    
+    F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
 F=F_T+F_cs+F_p+F_m;
 %----------------------------合力矩------------------------------------------
 %------------从飞机外侧面对舵机转轴往里看，逆时针转为正----------------------------
@@ -307,10 +327,11 @@ M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-
 %============================================
 M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 %=========================================
+
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
-sys(1) = F;
-sys(2) = M;
+sys(1)=F;
+sys(2)=M;
 
 
 % end mdlOutputs
