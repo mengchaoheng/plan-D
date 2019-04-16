@@ -231,30 +231,69 @@ sys = [];
 %
 function sys=mdlOutputs(t,x,u)
 %--------------------------------------------------------------------------------
-u_=u(1);
-v=u(2);
-D_x=u(3);%涵道诱导速度与来流耦合因子γ
-D_y=u(4);
-Coupling=u(5);
-Coupling_x=u(10);
-Coupling_y
-r_sm=u(11);
-k_rs=u(12);
-k_ra=u(13);
-Amplitude=u(6);
-r_m=u(17);
-V_i=u(7);
-V_c=u(8);
-T=u(9);
-k_ax=u(14);
-k_ay=u(15);
-k_az=-u(16);
-
-epsilon_p
-epsilon_m
-
+c=[c1;c2;c3;c4];
+dx=zeros(12,1);
+X=x(1);
+Y=x(2);
+Z=x(3);
+P=[X;Y;Z];
+u_=x(4);
+v=x(5);
+w=x(6);
+V_b=[u_;v;w];
+Roll=x(7);
+Pitch=x(8);
+Yaw=x(9);
+p=x(10);
+q=x(11);
+r=x(12);
+W=[p;q;r];
+Rn2b=Rn2bf(Roll,Pitch,Yaw);
+Rb2n=Rn2b';
+V_n=Rb2n*V_b;
+Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
+   0        cos(Roll)               -sin(Roll);
+   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
 %------------------------------------计算合力F-----------------------------------------------
-% 
+
+
+V_c= -(w-D_z);
+T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
+ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
+V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
+Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
+Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
+Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_i);
+Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
+beta=atan2((v-D_y),(u_-D_x));%侧滑角[-pi/2,pi/2]
+if Amplitude<1e-05
+    alpha=0; 
+else
+    alpha=acos(-(w-D_z)/Amplitude);%迎角[0,pi]
+end
+% if alpha>3.141
+%     alpha=3.14;
+% elseif alpha<0
+%     alpha=0;
+% end
+alpha=Constrain(alpha,0,pi);
+
+
+
+epsilon_m=interp1(e_m_X,e_m_Y,alpha);
+epsilon_p=interp1(e_p_X,e_p_Y,alpha);
+r_sm=interp1(r_sm_X,r_sm_Y,alpha);
+k_rs=interp1(k_rs_X,k_rs_Y,alpha);
+k_as=interp1(k_as_X,k_as_Y,alpha);
+k_ac=interp1(k_ac_X,k_ac_Y,alpha);
+k_ra=interp1(k_ra_X,k_ra_Y,alpha);
+r_m=interp1(r_m_X,r_m_Y,alpha);
+%------------------------------------------------------------
+
+%==========计算4个舵面衰减因子=============================
+%侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
+
+%==================1===================================
 if (u_-D_x)<0
     Attenuation1=Constrain(1-k_rs*Coupling_x,1-r_sm,1+r_sm);
 elseif (u_-D_x)>=0
@@ -278,22 +317,33 @@ if (v-D_y)<0
 elseif (v-D_y)>=0
     Attenuation4=Constrain(1-k_rs*Coupling_y,1-r_sm,1+r_sm);
 end
+%====================================================
 k_cs1=Attenuation1*d_cs;
 k_cs2=Attenuation2*d_cs;
 k_cs3=Attenuation3*d_cs;
 k_cs4=Attenuation4*d_cs;
-%------------------------------------------------------------
-
 K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
                   k_cs1   0    -k_cs3   0;
                   0      0    0        0];
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c-[c_b;c_b;c_b;c_b]);%舵面气动力
 %==================================
-r_a=k_ra*Coupling;
-F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
-F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+
+    r_a=k_ra*Coupling;
+    if (u_==D_x)&&(v==D_y) 
+        k_ax=0;
+        k_ay=0;
+    else 
+        k_ax=k_as*cos(beta);
+        k_ay=k_as*sin(beta);
+    end
+    k_az=-k_ac;
+    F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
+    
+    F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
 F=F_T+F_cs+F_p+F_m;
+F_y=F(2);
+F_z=F(3);
 %----------------------------合力矩------------------------------------------
 %------------从飞机外侧面对舵机转轴往里看，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
@@ -307,10 +357,11 @@ M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-
 %============================================
 M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 %=========================================
+
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
-sys(1) = F;
-sys(2) = M;
+sys(1)=F;
+sys(2)=M;
 
 
 % end mdlOutputs
