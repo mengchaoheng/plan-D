@@ -266,7 +266,6 @@ k_q0=0.290827;
 k_q1=-0.02182;
 I_prop=0.000029;
 S=0.040828138126052952;%面积
-% den=1.225;%空气密度
 %------------------------------------计算合力F-----------------------------------------------
 V_c= -(w-D_z);
 T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
@@ -347,7 +346,6 @@ M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
 sys(1)=F;
 sys(2)=M;
-
 
 % end mdlOutputs
 
