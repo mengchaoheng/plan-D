@@ -84,7 +84,7 @@ mydev1=0;
 mydev2=0;
 % myvariable = 0;
 a=0;
-b=0;
+a=1;
 % Register variables after the project is loaded and store the variables in
 % initVars so they can be cleared later on the project shutdown.
 endVars = who;
