@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 2;
-sizes.NumInputs      = 20;
+sizes.NumInputs      = 21;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -252,7 +252,7 @@ k_ac=u(17);
 k_ra=u(18);
 r_m=u(19);
 beta=u(20);
-den
+den=u(21);
 %----------------------基本参数---------------------------------------------------
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
