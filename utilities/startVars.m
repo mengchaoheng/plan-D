@@ -9,8 +9,6 @@
 
 % Register variables in the workspace before the project is loaded
 initVars = who;
-
-
 % Variants Conditions
 asbVariantDefinition;
 VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
