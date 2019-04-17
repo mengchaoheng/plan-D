@@ -77,17 +77,6 @@ d2r=pi/180;
 r2d=180/pi;
 c_m=20*d2r;
 % myvariable = 0;
-mch=0;
-mch=1;
-mch=2;
-
-
-
-
-%====================
-cf=0;
-
-
 % Register variables after the project is loaded and store the variables in
 % initVars so they can be cleared later on the project shutdown.
 endVars = who;
