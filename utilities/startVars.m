@@ -78,6 +78,7 @@ r2d=180/pi;
 c_m=20*d2r;
 
 addd=0;
+addd=1;
 % myvariable = 0;
 
 % Register variables after the project is loaded and store the variables in
