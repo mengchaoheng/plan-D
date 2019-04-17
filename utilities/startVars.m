@@ -87,6 +87,7 @@ a=0;
 a=1;
 a=2;
 a=3;
+a=4;
 b=0;
 b=1;
 % Register variables after the project is loaded and store the variables in
