@@ -76,9 +76,6 @@ e_p_Y=data7(:,2);
 d2r=pi/180;
 r2d=180/pi;
 c_m=20*d2r;
-
-add=0;
-add1=1;
 % myvariable = 0;
 
 % Register variables after the project is loaded and store the variables in
