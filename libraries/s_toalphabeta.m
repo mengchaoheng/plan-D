@@ -249,15 +249,6 @@ alpha=Constrain(alpha,0,pi);
 %------------------------------------------------------------
 sys(1)=alpha;
 sys(2)=beta;
-
-% epsilon_m=interp1(e_m_X,e_m_Y,alpha);
-% epsilon_p=interp1(e_p_X,e_p_Y,alpha);
-% r_sm=interp1(r_sm_X,r_sm_Y,alpha);
-% k_rs=interp1(k_rs_X,k_rs_Y,alpha);
-% k_as=interp1(k_as_X,k_as_Y,alpha);
-% k_ac=interp1(k_ac_X,k_ac_Y,alpha);
-% k_ra=interp1(k_ra_X,k_ra_Y,alpha);
-% r_m=interp1(r_m_X,r_m_Y,alpha);
 % end mdlOutputs
 
 
