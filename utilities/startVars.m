@@ -9,8 +9,6 @@
 
 % Register variables in the workspace before the project is loaded
 initVars = who;
-
-
 % Variants Conditions
 asbVariantDefinition;
 VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
@@ -78,10 +76,6 @@ e_p_Y=data7(:,2);
 d2r=pi/180;
 r2d=180/pi;
 c_m=20*d2r;
-
-add=0;
-add1=1;
-
 % myvariable = 0;
 
 % Register variables after the project is loaded and store the variables in
