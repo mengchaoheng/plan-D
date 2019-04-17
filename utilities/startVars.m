@@ -90,6 +90,7 @@ a=3;
 a=4;
 b=0;
 b=1;
+b=2;
 % Register variables after the project is loaded and store the variables in
 % initVars so they can be cleared later on the project shutdown.
 endVars = who;
