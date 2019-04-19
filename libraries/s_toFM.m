@@ -167,8 +167,8 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 2;
-sizes.NumInputs      = 21;
+sizes.NumOutputs     = 6;
+sizes.NumInputs      = 23;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -253,6 +253,8 @@ k_ra=u(18);
 r_m=u(19);
 beta=u(20);
 den=u(21);
+p=u(22);
+q=u(23);
 %----------------------基本参数---------------------------------------------------
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
@@ -344,8 +346,8 @@ M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
-sys(1)=F;
-sys(2)=M;
+sys(1:3)=F;
+sys(4:6)=M;
 
 % end mdlOutputs
 
