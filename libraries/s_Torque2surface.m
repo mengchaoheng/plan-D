@@ -187,7 +187,7 @@ str = [];
 %
 % initialize the array of sample times
 %
-ts  = [0 0];
+ts  = [-1 0];
 
 % Specify the block simStateCompliance. The allowed values are:
 %    'UnknownSimState', < The default setting; warn and assume DefaultSimState
