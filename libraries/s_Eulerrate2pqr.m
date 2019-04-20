@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 3;
-sizes.NumInputs      = 3;
+sizes.NumInputs      = 5;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -206,15 +206,7 @@ simStateCompliance = 'UnknownSimState';
 %
 function sys=mdlDerivatives(t,x,u)
 
-
-Roll=u(4);
-Pitch=u(5);
-Yaw=u(6);
-Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
-   0        cos(Roll)               -sin(Roll);
-   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
-
-sys = Q\[u(1);u(2);u(3)];
+sys = [];
 
 % end mdlDerivatives
 
@@ -238,8 +230,12 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
-
-sys = [];
+Roll=u(4);
+Pitch=u(5);
+Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
+   0        cos(Roll)               -sin(Roll);
+   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
+sys = Q\[u(1);u(2);u(3)];
 
 % end mdlOutputs
 
