@@ -36,7 +36,7 @@ inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
 % Initial contitions
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [37.628738616666666 -1.223933911333333e+02 100];
-initPosNED = [0 0 -10];
+initPosNED = [0 0 0];
 initVb = [0 0 0];
 initEuler = [0 0 0];
 initAngRates = [0 0 0];
@@ -76,6 +76,9 @@ e_p_Y=data7(:,2);
 d2r=pi/180;
 r2d=180/pi;
 c_m=20*d2r;
+speed=1225;
+global start1
+start1=0;
 % myvariable = 0;
 % Register variables after the project is loaded and store the variables in
 % initVars so they can be cleared later on the project shutdown.

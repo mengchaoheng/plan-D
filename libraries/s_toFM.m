@@ -270,6 +270,14 @@ I_prop=0.000029;
 S=0.040828138126052952;%面积
 %------------------------------------计算合力F-----------------------------------------------
 V_c= -(w-D_z);
+% global start1
+% if(start1==0)
+%     speed=1225;
+%     start1=1;
+% end
+if(speed<=500)
+    speed=800;
+end
 T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
 ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
 V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
