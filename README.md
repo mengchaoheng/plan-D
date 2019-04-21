@@ -65,11 +65,13 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 经过多日奋战，D计划终于在2019-4-21初步完成。至此，特别感谢
 
-@ Prof.Peter
+* Prof.Peter
 	*为本项目提供RMB支持。
-@ Dr.CZH
+
+* Dr.CZH
 	*为本项目提供所有数据！特别是关于桶的数学模型、空气动力学特性。他提供的数据是本项目得以进行的前提。
-@ 利物浦足球队
+
+* 利物浦足球队
 	*周末晚间进行的英超联赛和周中凌晨进行欧冠赛事，是本项目至今没有流产的原因之一。毕竟，中场休息时间真的很无聊。
 
 
