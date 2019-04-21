@@ -270,11 +270,6 @@ I_prop=0.000029;
 S=0.040828138126052952;%面积
 %------------------------------------计算合力F-----------------------------------------------
 V_c= -(w-D_z);
-% global start1
-% if(start1==0)
-%     speed=1225;
-%     start1=1;
-% end
 if(speed<=800)
     speed=800;
 end
@@ -288,7 +283,6 @@ Coupling_x=sqrt( (u_-D_x)^2 + (w-D_z)^2 ) / (sqrt( (u_-D_x)^2 + (w-D_z)^2 ) + V_
 Coupling_y=sqrt( (v-D_y)^2 + (w-D_z)^2 ) / (sqrt( (v-D_y)^2 + (w-D_z)^2 ) + V_i);
 %==========计算4个舵面衰减因子=============================
 %侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
-
 %==================1===================================
 if (u_-D_x)<0
     Attenuation1=Constrain(1-k_rs*Coupling_x,1-r_sm,1+r_sm);
@@ -324,19 +318,17 @@ K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c-[c_b;c_b;c_b;c_b]);%舵面气动力
 %==================================
-
-    r_a=k_ra*Coupling;
-    if (u_==D_x)&&(v==D_y) 
-        k_ax=0;
-        k_ay=0;
-    else 
-        k_ax=k_as*cos(beta);
-        k_ay=k_as*sin(beta);
-    end
-    k_az=-k_ac;
-    F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
-    
-    F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+r_a=k_ra*Coupling;
+if (u_==D_x)&&(v==D_y) 
+    k_ax=0;
+    k_ay=0;
+else 
+    k_ax=k_as*cos(beta);
+    k_ay=k_as*sin(beta);
+end
+k_az=-k_ac;
+F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
+F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
 F=F_T+F_cs+F_p+F_m;
 %----------------------------合力矩------------------------------------------
 %------------从飞机外侧面对舵机转轴往里看，逆时针转为正----------------------------
@@ -351,7 +343,6 @@ M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-
 %============================================
 M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 %=========================================
-
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
 sys(1:3)=F;

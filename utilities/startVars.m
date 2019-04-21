@@ -11,7 +11,7 @@
 initVars = who;
 % Variants Conditions
 asbVariantDefinition;
-VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
+VSS_COMMAND = 2;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
@@ -26,7 +26,8 @@ asbBusDefinitionStates;
 
 % Sampling rate
 Ts= 0.01;
-
+d2r=pi/180;
+r2d=180/pi;
 % Mass properties
 mass = 1.53;
 I_x=0.025483;
@@ -36,13 +37,24 @@ inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
 % Initial contitions
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [37.628738616666666 -1.223933911333333e+02 100];
-initPosNED = [0 0 0];
+initPosNED = [0 0 -3.39];
 initVb = [0 0 0];
-initEuler = [0 0 0];
-initAngRates = [0 0 0];
+initEuler = [-1.14*d2r -1.17*d2r 6.55*d2r];
+initAngRates = [0.04 -0.03 -0.08];
 
 %% Custom Variables
 % Add your variables here:
+
+controlldata = xlsread('controll');
+rolldata=controlldata(:,1)./(100*r2d);
+pitchdata=controlldata(:,2)./(100*r2d);
+yawdata=controlldata(:,3)./(100*r2d);
+hdata=controlldata(:,4)./(100*r2d);
+cmdroll = timeseries(rolldata,0:Ts:Ts*(length(controlldata)-1));
+cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(controlldata)-1));
+cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(controlldata)-1));
+cmdh = timeseries(hdata,0:Ts:Ts*(length(controlldata)-1));
+
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);
 r_sm_Y=data1(:,2);
@@ -73,12 +85,7 @@ e_m_Y=data6(:,2);
 data7 = load('e_p.txt');
 e_p_X=data7(:,1);
 e_p_Y=data7(:,2);
-d2r=pi/180;
-r2d=180/pi;
-c_m=20*d2r;
-speed=1225;
-global start1
-start1=0;
+
 % myvariable = 0;
 % Register variables after the project is loaded and store the variables in
 % initVars so they can be cleared later on the project shutdown.
