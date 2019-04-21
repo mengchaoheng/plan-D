@@ -36,7 +36,7 @@ I_z=0.00562;
 inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
 % Initial contitions
 initDate = [2019 5 1 0 0 0];
-initPosLLA = [37.628738616666666 -1.223933911333333e+02 100];
+initPosLLA = [113.353891 23.159235 30];
 initPosNED = [0 0 0];
 initVb = [0 0 0];
 initEuler = [0 0 0];
