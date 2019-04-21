@@ -11,7 +11,7 @@
 initVars = who;
 % Variants Conditions
 asbVariantDefinition;
-VSS_COMMAND = 2;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
+VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
@@ -37,10 +37,10 @@ inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
 % Initial contitions
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [37.628738616666666 -1.223933911333333e+02 100];
-initPosNED = [0 0 -3.39];
+initPosNED = [0 0 0];
 initVb = [0 0 0];
-initEuler = [-1.14*d2r -1.17*d2r 6.55*d2r];
-initAngRates = [0.04 -0.03 -0.08];
+initEuler = [0 0 0];
+initAngRates = [0 0 0];
 
 %% Custom Variables
 % Add your variables here:
