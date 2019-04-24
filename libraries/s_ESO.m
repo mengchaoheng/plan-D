@@ -221,14 +221,14 @@ function sys=mdlUpdate(t,x,u)
 
 y=u(1);
 h=0.01;
-b=1/0.025504;
-beta1=100;beta2=400;beta3=3000;
+
+beta1=100;beta2=700;beta3=3500;
 delta=0.1;
 alfa1=0.5;alfa2=0.25;
 epc0=x(1)-y;
 
 sys(1)=x(1)+h*(x(2)-beta1*epc0);
-sys(2)=x(2)+h*(x(3)-beta2*fal(epc0,alfa1,delta)+b*u(2));
+sys(2)=x(2)+h*(x(3)-beta2*fal(epc0,alfa1,delta)+u(2));
 sys(3)=x(3)-h*beta3*fal(epc0,alfa2,delta);
 
 
