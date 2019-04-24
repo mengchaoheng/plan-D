@@ -222,7 +222,7 @@ function sys=mdlUpdate(t,x,u)
 y=u(1);
 h=0.01;
 b=1/0.025504;
-beta1=100;beta2=2000;beta3=5000;
+beta1=100;beta2=400;beta3=3000;
 delta=0.1;
 alfa1=0.5;alfa2=0.25;
 epc0=x(1)-y;

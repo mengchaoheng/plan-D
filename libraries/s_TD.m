@@ -220,9 +220,9 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlUpdate(t,x,u)
-delta=2;
 T=0.01;
 h=5*T;
+delta=4*0.7/0.3;
 sys(1)=x(1)+h*x(2);                %Transient position signal
 sys(2)=x(2)+h*fhan(x(1)-u,x(2),delta,h);  %Transient speed signal
 
