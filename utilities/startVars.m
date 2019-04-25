@@ -11,7 +11,7 @@
 initVars = who;
 % Variants Conditions
 asbVariantDefinition;
-VSS_COMMAND = 3;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
+VSS_COMMAND = 2;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
@@ -34,20 +34,20 @@ I_x=0.025483;
 I_y=0.025504;
 I_z=0.00562;
 inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
-% Initial contitions
-% initDate = [2019 5 1 0 0 0];
-% initPosLLA = [113.353891 23.159235 30];
-% initPosNED = [0 0 0];
-% initVb = [0 0 0];
-% initEuler = [0 0 0];
-% initAngRates = [0 0 0];
-
+% % Initial contitions
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 -3.390000000000000];
+initPosNED = [0 0 0];
 initVb = [0 0 0];
-initEuler = [0.002443460952792 -0.035604716740684 0.084124869946127];
+initEuler = [0 0 0];
 initAngRates = [0 0 0];
+
+% initDate = [2019 5 1 0 0 0];
+% initPosLLA = [113.353891 23.159235 30];
+% initPosNED = [0 0 -3.390000000000000];
+% initVb = [0 0 0];
+% initEuler = [0.002443460952792 -0.035604716740684 0.084124869946127];
+% initAngRates = [0 0 0];
 %% Custom Variables
 % Add your variables here:
 
