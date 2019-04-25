@@ -1,4 +1,4 @@
-function [sys,x0,str,ts,simStateCompliance] = s_ESO(t,x,u,flag)
+function [sys,x0,str,ts,simStateCompliance] = s_HESO(t,x,u,flag)
 %SFUNTMPL General MATLAB S-Function Template
 %   With MATLAB S-functions, you can define you own ordinary differential
 %   equations (ODEs), discrete system equations, and/or just about
@@ -221,8 +221,9 @@ function sys=mdlUpdate(t,x,u)
 
 y=u(1);
 h=0.01;
+% g=9.788;
 
-beta1=100;beta2=700;beta3=3500;
+beta1=100;beta2=600;beta3=2000;
 delta=0.1;
 alfa1=0.5;alfa2=0.25;
 epc0=x(1)-y;
