@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 7;
+sizes.NumOutputs     = 4;
 sizes.NumInputs      = 3;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -291,7 +291,7 @@ if flag1
     if r_e>r_m
         r_e=r_m;
     end
-    [U(1),U(2),U(3)]=sph2cart(azimuth,elevation,r_e);
+    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
 end
 if flag2
     [~,~,r_m] = cart2sph(M2(1),M2(2),M2(3));
@@ -299,7 +299,7 @@ if flag2
     if r_e>r_m
         r_e=r_m;
     end
-    [U(1),U(2),U(3)]=sph2cart(azimuth,elevation,r_e);
+    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
 end
 if flag3
     [~,~,r_m] = cart2sph(M3(1),M3(2),M3(3));
@@ -307,15 +307,11 @@ if flag3
     if r_e>r_m
         r_e=r_m;
     end
-    [U(1),U(2),U(3)]=sph2cart(azimuth,elevation,r_e);
+    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
 end
-if (flag1~=1 && flag2~=1 && flag3~=1)
-   aaaa=0;
-end
-U
-y = Torque2surface1(U);
+y = servo(u);
 sys(1:4) = y;
-sys(5:7) = U;
+% sys(5:7) = u;
 
 %%
 % end mdlOutputs

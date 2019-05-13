@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 7;
+sizes.NumOutputs     = 4;
 sizes.NumInputs      = 3;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -313,7 +313,7 @@ y = Torque2surface1(u);
 % y = Torque2surface1(U);
 
 sys(1:4) = y;
-sys(5:7) = u;
+% sys(5:7) = u;
 
 %%
 % end mdlOutputs
