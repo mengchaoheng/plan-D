@@ -230,6 +230,12 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
+%---------------------------------------------
+A=0.349;
+u(1)=Constrain(u(1),-0.39088,0.39088);
+u(2)=Constrain(u(2),-0.39088,0.39088);
+u(3)=Constrain(u(3),-0.3043,0.3043);
+%---------------------------------------------
 %% 在线运行凸优化
 % K=1*[-0.56   0       0.56    0;
 %           0  -0.56    0       0.56;
@@ -254,67 +260,73 @@ function sys=mdlOutputs(t,x,u)
 %     y = Torque2surface1(u);
 % end
 %% 几何方法
-K=1*[-0.56   0       0.56    0;
-          0  -0.56    0       0.56;
-      0.218   0.218   0.218   0.218];
-% 平面方程
-A1=0.3893;B1=0.3893;C1=1;D1=-0.3043;
-A2=1;B2=0;C2=0;D2=-0.39088;
-A3=0;B3=1;C3=0;D3=-0.39088;
-%---------------------------------------------
-u(1)=Constrain(u(1),-0.39088,0.39088);
-u(2)=Constrain(u(2),-0.39088,0.39088);
-u(3)=Constrain(u(3),-0.3043,0.3043);
-%---------------------------------------------
-e = u;
-e1=fun3(e);
-flag1=0;
-flag2=0;
-flag3=0;
-M1 = fun1(A1,B1,C1,D1,e1);
-if (M1(1)<=0.39088 && M1(1)>=0 && M1(2)<=0.39088 && M1(2)>=0 && M1(3)<=0.3043 && M1(3)>=0)
-    flag1=1;
-end
+% K=1*[-0.56   0       0.56    0;
+%           0  -0.56    0       0.56;
+%       0.218   0.218   0.218   0.218];
+% % 平面方程
+% A1=0.3893;B1=0.3893;C1=1;D1=-0.3043;
+% A2=1;B2=0;C2=0;D2=-0.39088;
+% A3=0;B3=1;C3=0;D3=-0.39088;
+% e = u;
+% e1=fun3(e);
+% flag1=0;
+% flag2=0;
+% flag3=0;
+% M1 = fun1(A1,B1,C1,D1,e1);
+% if (M1(1)<=0.39088 && M1(1)>=0 && M1(2)<=0.39088 && M1(2)>=0 && M1(3)<=0.3043 && M1(3)>=0)
+%     flag1=1;
+% end
+% 
+% if(dot([A2;B2;C2],e1)>1e-5)
+%     M2 = fun1(A2,B2,C2,D2,e1);
+%     if (0.39088*M2(3)+0.1521*M2(2)-0.39088*0.1521<0 && M2(2)<0.39088 && M2(2)>=0 && M2(3)<0.1521 && M2(3)>=0)
+%         flag2=1;
+%     end
+% end
+% 
+% if(dot([A3;B3;C3],e1)>1e-5)
+%     M3 = fun1(A3,B3,C3,D3,e1);
+%     if (M3(1)<0.39088 && M3(1)>=0 && 0.39088*M3(3)+0.1521*M3(1)-0.39088*0.1521<0 && M3(3)<0.1521 && M3(3)>=0)
+%         flag3=1;
+%     end
+% end
+% 
+% if flag1
+%     [~,~,r_m] = cart2sph(M1(1),M1(2),M1(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% if flag2
+%     [~,~,r_m] = cart2sph(M2(1),M2(2),M2(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% if flag3
+%     [~,~,r_m] = cart2sph(M3(1),M3(2),M3(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% y = Torque2surface2(u);
+%%
+k=[-0.8929         0    1.1468;
+         0   -0.8929    1.1468;
+    0.8929         0    1.1468;
+         0    0.8929    1.1468];
+y = k*u;
+y(1)=Constrain(y(1),-A,A);
+y(2)=Constrain(y(2),-A,A);
+y(3)=Constrain(y(3),-A,A);
+y(4)=Constrain(y(4),-A,A);
 
-if(dot([A2;B2;C2],e1)>1e-5)
-    M2 = fun1(A2,B2,C2,D2,e1);
-    if (0.39088*M2(3)+0.1521*M2(2)-0.39088*0.1521<0 && M2(2)<0.39088 && M2(2)>=0 && M2(3)<0.1521 && M2(3)>=0)
-        flag2=1;
-    end
-end
-
-if(dot([A3;B3;C3],e1)>1e-5)
-    M3 = fun1(A3,B3,C3,D3,e1);
-    if (M3(1)<0.39088 && M3(1)>=0 && 0.39088*M3(3)+0.1521*M3(1)-0.39088*0.1521<0 && M3(3)<0.1521 && M3(3)>=0)
-        flag3=1;
-    end
-end
-
-if flag1
-    [~,~,r_m] = cart2sph(M1(1),M1(2),M1(3));
-    [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
-    if r_e>r_m
-        r_e=r_m;
-    end
-    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
-end
-if flag2
-    [~,~,r_m] = cart2sph(M2(1),M2(2),M2(3));
-    [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
-    if r_e>r_m
-        r_e=r_m;
-    end
-    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
-end
-if flag3
-    [~,~,r_m] = cart2sph(M3(1),M3(2),M3(3));
-    [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
-    if r_e>r_m
-        r_e=r_m;
-    end
-    [u(1),u(2),u(3)]=sph2cart(azimuth,elevation,r_e);
-end
-y = Torque2surface2(u);
 sys(1:4) = y;
 % sys(5:7) = u;
 
