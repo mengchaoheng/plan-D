@@ -233,10 +233,10 @@ function sys=mdlOutputs(t,x,u)
 
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y 
 global r_m_X r_m_Y e_m_X  e_m_Y e_p_X e_p_Y
-k_TS=1.06355685131195e-5;
-k_TV=-3.0620408163265e-4;
+k_TS=9.9796018325697625989171178675552e-6;
+k_TV=-2.8620408163265306122448979591837e-4;
 c_b=-0.026179938;%漩涡
-d_cs=0.01495642059;
+d_cs=0.0149564;
 k_q0=0.290827;
 k_q1=-0.02182;
 S=0.04082813812;%面积
@@ -256,8 +256,13 @@ D_y=u(10);
 D_z=u(11);
 %------------------------------------------------------------
 V_c= -(w-D_z);
-T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
-ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
+if w-D_z<0
+    T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
+    ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
+else
+    T=k_TS*speed^2;
+    ratio=k_q0;
+end
 V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
 Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
 Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
@@ -307,23 +312,30 @@ K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
                   k_cs1   0    -k_cs3   0;
                   0      0    0        0];
 F_T=[0;0;-T];%风扇拉力
-F_cs=K_cs*(c-[c_b;c_b;c_b;c_b]);%舵面气动力
+F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %==================================
-   k_as=interp1(k_as_X,k_as_Y,alpha);
-    k_ac=interp1(k_ac_X,k_ac_Y,alpha);
-    k_ra=interp1(k_ra_X,k_ra_Y,alpha);
-    r_a=k_ra*Coupling;
-    if (u_==D_x)&&(v==D_y) 
-        k_ax=0;
-        k_ay=0;
-    else 
-        k_ax=k_as*cos(beta);
-        k_ay=k_as*sin(beta);
-    end
-    k_az=-k_ac;
-    F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
-    r_m=interp1(r_m_X,r_m_Y,alpha);
-    F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+%     k_as=interp1(k_as_X,k_as_Y,alpha);
+%     k_ac=interp1(k_ac_X,k_ac_Y,alpha);
+%     k_ra=interp1(k_ra_X,k_ra_Y,alpha);
+%     r_a=k_ra*Coupling;
+%     if (u_==D_x)&&(v==D_y) 
+%         k_ax=0;
+%         k_ay=0;
+%     else 
+%         k_ax=k_as*cos(beta);
+%         k_ay=k_as*sin(beta);
+%     end
+%     k_az=-k_ac;
+%     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
+%     r_m=interp1(r_m_X,r_m_Y,alpha);
+%     F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+ F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
+         -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
+                                     0                             ]; 
+    [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
+    F_p=[F_as*cos(beta);
+         F_as*sin(beta);
+         -F_ac        ];      
 F=F_T+F_cs+F_p+F_m;
 sys(1:3) = F;
 
