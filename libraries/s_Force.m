@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 3;
+sizes.NumOutputs     = 6;
 sizes.NumInputs      = 11;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -235,12 +235,27 @@ global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y
 global r_m_X r_m_Y e_m_X  e_m_Y e_p_X e_p_Y
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
+d_MS=1.1334291042e-7;
+d_ds=-1.3931461486e-5;
 c_b=-0.026179938;%漩涡
 d_cs=0.0149564;
+l_1=0.17078793;
+l_2=0.06647954;
 k_q0=0.290827;
 k_q1=-0.02182;
-S=0.04082813812;%面积
+I_prop=0.000029;
+S=0.040828138126052952;%面积
 den=1.225;%空气密度
+g=9.788;
+m=1.53;
+G=[0;0;m*g];
+I_x=0.025483;
+I_y=0.025504;
+I_z=0.00562;
+I=[I_x 0 0;0 I_y 0;0 0 I_z];
+d2r=pi/180;
+r2d=180/pi;
+c_m=20*d2r;
 %--------------------------------------------------------------------------------
 speed=u(1);%转速
 c1=u(2);%舵面转角，rad
@@ -254,8 +269,10 @@ w=u(8);
 D_x=u(9);%机体系扰动
 D_y=u(10);
 D_z=u(11);
+%------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
+%-------------------------------拉力----------------------
 if w-D_z<0
     T=(k_TS*speed^2-k_TV*(w-D_z)*speed);%推力
     ratio=k_q1*V_c+k_q0;%涵道拉力占总拉力比值q
@@ -263,6 +280,7 @@ else
     T=k_TS*speed^2;
     ratio=k_q0;
 end
+%------------------------------------------------------------
 V_i = -(w-D_z)/(2*(1-ratio)) + sqrt( ((w-D_z)/(2*(1-ratio)))^2 + T/(2*den*S*(1-ratio)) )-V_c;%风扇吹出的风速V_c+V_i
 Amplitude=sqrt((u_-D_x)^2+(v-D_y)^2+(w-D_z)^2);%来流速度
 Coupling=Amplitude/(Amplitude+V_i);%涵道诱导速度与来流耦合因子γ
@@ -274,7 +292,12 @@ if Amplitude<1e-05
 else
     alpha=acos(-(w-D_z)/Amplitude);%迎角[0,pi]
 end
-alpha=Constrain(alpha,0,pi);
+if alpha>3.141
+    alpha=3.14;
+elseif alpha<0
+    alpha=0;
+end
+
 %==========计算4个舵面衰减因子=============================
 %侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
 r_sm=interp1(r_sm_X,r_sm_Y,alpha);
@@ -314,11 +337,11 @@ K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %==================================
-%     k_as=interp1(k_as_X,k_as_Y,alpha);
+%      k_as=interp1(k_as_X,k_as_Y,alpha);
 %     k_ac=interp1(k_ac_X,k_ac_Y,alpha);
 %     k_ra=interp1(k_ra_X,k_ra_Y,alpha);
 %     r_a=k_ra*Coupling;
-%     if (u_==D_x)&&(v==D_y) 
+%     if (u==D_x)&&(v==D_y) 
 %         k_ax=0;
 %         k_ay=0;
 %     else 
@@ -328,16 +351,17 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     k_az=-k_ac;
 %     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
 %     r_m=interp1(r_m_X,r_m_Y,alpha);
-%     F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
- F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
+%     F_m= -r_m*den*S*(V_c+V_i)*[(u-D_x);(v-D_y);0];%动量阻力
+    F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
          -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
                                      0                             ]; 
     [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
     F_p=[F_as*cos(beta);
          F_as*sin(beta);
-         -F_ac        ];      
+         -F_ac          ];      
 F=F_T+F_cs+F_p+F_m;
 sys(1:3) = F;
+sys(4:6) = F_p;
 
 
 % end mdlOutputs
