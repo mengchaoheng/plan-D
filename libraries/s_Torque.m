@@ -375,7 +375,10 @@ epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
 sys(1:3) = M;
-sys(4:6) = M_prop+M_ds+M_gyro+M_aero;
+kk=[-0.56   0       0.56    0;
+          0  -0.56    0       0.56;
+      0.218   0.218   0.218   0.218];  
+sys(4:6) = M-kk*c;
 
 
 % end mdlOutputs

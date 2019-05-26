@@ -34,6 +34,7 @@ I_x=0.025483;
 I_y=0.025504;
 I_z=0.00562;
 inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
+if(VSS_COMMAND == 0)
 % % Initial contitions
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
@@ -41,13 +42,15 @@ initPosNED = [0 0 0];
 initVb = [0 0 0];
 initEuler = [0 0 0];
 initAngRates = [0 0 0];
-
-% initDate = [2019 5 1 0 0 0];
-% initPosLLA = [113.353891 23.159235 30];
-% initPosNED = [0 0 -3.390000000000000];
-% initVb = [0 0 0];
-% initEuler = [0.002443460952792 -0.035604716740684 0.084124869946127];
-% initAngRates = [0 0 0];
+end
+if(VSS_COMMAND ==2)
+initDate = [2019 5 1 0 0 0];
+initPosLLA = [113.353891 23.159235 30];
+initPosNED = [0 0 -3.390000000000000];
+initVb = [0 0 0];
+initEuler = [0.002443460952792 -0.035604716740684 0.084124869946127];
+initAngRates = [0 0 0];
+end
 %% Custom Variables
 % Add your variables here:
 

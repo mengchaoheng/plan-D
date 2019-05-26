@@ -1,4 +1,4 @@
-function M = fun1(A,B,C,D,u)
+function M = fun1(A,B,C,D,u,s)
 %% 求直线与平面的交点坐标
 % 已知空间直线L：(x-a)/m=(x-b)/n=(z-c)/p和空间平面π：Ax+By+Cz+D=0;
 % 求直线L与平面π的交点的坐标。
@@ -11,9 +11,9 @@ function M = fun1(A,B,C,D,u)
 m=u(1);
 n=u(2);
 p=u(3);
-a=0;
-b=0;
-c=0;
+a=s(1);
+b=s(2);
+c=s(3);
 t=-(A*a+B*b+C*c+D)/(A*m+B*n+C*p);
-M=[t*m;t*n;t*p];
+M=[t*m+a;t*n+b;t*p+c];
 end
