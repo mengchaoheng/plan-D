@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 7;
-sizes.NumInputs      = 3;
+sizes.NumInputs      = 6;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -257,32 +257,33 @@ function sys=mdlOutputs(t,x,u)
 % if(normest(u)>=normest(U))
 %     y = x;
 % else
-%     y = Torque2surface1(u);
+%     y = Torque2surface3(u);
 % end
 % u_in=K*y;
 %% 几何方法
-% %---------------------------------------------
-% u(1)=Constrain(u(1),-0.39088,0.39088);
-% u(2)=Constrain(u(2),-0.39088,0.39088);
-% u(3)=Constrain(u(3),-0.3043,0.3043);
-% %---------------------------------------------
-% K=1*[-0.56   0       0.56    0;
-%           0  -0.56    0       0.56;
-%       0.218   0.218   0.218   0.218];
-[azimuth,elevation,r_m]=sph_r(u,[0;0;0]);
-[~,~,r_u] = cart2sph(u(1),u(2),u(3));
-if (r_m>r_u)
-   U=u;
+%---------------------------------------------
+u(1)=Constrain(u(1),-0.39088,0.39088);
+u(2)=Constrain(u(2),-0.39088,0.39088);
+u(3)=Constrain(u(3),-0.3043,0.3043);
+%---------------------------------------------
+K=1*[-0.56   0       0.56    0;
+          0  -0.56    0       0.56;
+      0.218   0.218   0.218   0.218];
+M=crossover_point([0;0;0],u(1:3));
+if (norm(u(1:3))>norm(M))
+   U=M;
+elseif(M(1)==0&&M(2)==0&&M(3)==0)
+   U=[0;0;0];
 else
-    [U(1),U(2),U(3)]=sph2cart(azimuth,elevation,r_m);
+   U=u(1:3);
 end
-% % k=[-0.8929         0    1.1468;
-% %          0   -0.8929    1.1468;
-% %     0.8929         0    1.1468;
-% %          0    0.8929    1.1468];
-% % y = k*u;     
-% y = Torque2surface1(u);
-% u_in=K*y;
+% % % k=[-0.8929         0    1.1468;
+% % %          0   -0.8929    1.1468;
+% % %     0.8929         0    1.1468;
+% % %          0    0.8929    1.1468];
+% y = k*u;     
+y = Torque2surface1(U);
+u_in=K*y;
 %%
 % %---------------------------------------------
 % u(1)=Constrain(u(1),-0.39088,0.39088);
@@ -310,23 +311,29 @@ end
 % y = servo(u);
 % u_in=K*y;
 %% 估计扰动，优化
-K=1*[-0.56   0       0.56    0;
-          0  -0.56    0       0.56;
-      0.218   0.218   0.218   0.218];
-e = [u(1);u(2);u(3)];
-d = [u(4);u(5);u(6)];
-% [azimuth_em,elevation_em,r_em]=sph_r(e,[0;0;0]);
-[~,~,r_dm]=sph_r(d,[0;0;0]);
-[~,~,r_d] = cart2sph(d(1),d(2),d(3));
-if (r_d>r_dm)
-   U=d;
-else
-    dynamics=e-d;
-    [azimuth,elevation,r] = sph_r(e,dynamics);
-    [U(1),U(2),U(3)]=sph2cart(azimuth,elevation,r);
-end
-y = Torque2surface1(U);
-u_in=K*y;
+% K=1*[-0.56   0       0.56    0;
+%           0  -0.56    0       0.56;
+%       0.218   0.218   0.218   0.218];
+% e = [u(1);u(2);u(3)];
+% d = [u(4);u(5);u(6)];
+% % % % d(1)=Constrain(d(1),-0.39088,0.39088);
+% % % % d(2)=Constrain(d(2),-0.39088,0.39088);
+% % % % d(3)=Constrain(d(3),-0.3043,0.3043);
+% % % % e(1)=Constrain(e(1),-0.39088,0.39088);
+% % % % e(2)=Constrain(e(2),-0.39088,0.39088);
+% % % % e(3)=Constrain(e(3),-0.3043,0.3043);
+% M_d=crossover_point([0;0;0],d);
+% if (norm(d)>norm(M_d))
+%    d=M_d;
+% end
+% M_u=crossover_point(d,e);
+% if (norm(e)>=norm(M_u))
+%     U=M_u;
+% else
+%     U=d+e;
+% end
+% y = Torque2surface3(U);
+% u_in=K*y;
 %%
 sys(1:4) = y;
 sys(5:7) = u_in;
