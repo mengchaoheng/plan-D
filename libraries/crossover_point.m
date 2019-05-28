@@ -15,10 +15,10 @@ n=[ A  B  C -1;
 
 for i=1:12
     aa=u-s;
-    if (aa(1)==0 && aa(2)==0 && aa(3)==0) % 垂直
-        M=[0;0;0];
+    if (aa(1)==0 && aa(2)==0 && aa(3)==0)
+        M=[0;0;0];% 没有交点
         return;
-    elseif( abs( dot( n(i,1:3)'/norm(n(i,1:3)'),(u-s)/norm(u-s) ) )<1e-6)
+    elseif( abs( dot( n(i,1:3)'/norm(n(i,1:3)'),(u-s)/norm(u-s) ) )<1e-6) % 垂直
         continue;
     else % 不垂直
         Mi=fun_t(n(i,:),u-s,s);
