@@ -276,12 +276,7 @@ elseif(M(1)==0&&M(2)==0&&M(3)==0)
    U=[0;0;0];
 else
    U=u(1:3);
-end
-% % % k=[-0.8929         0    1.1468;
-% % %          0   -0.8929    1.1468;
-% % %     0.8929         0    1.1468;
-% % %          0    0.8929    1.1468];
-% y = k*u;     
+end   
 y = Torque2surface1(U);
 u_in=K*y;
 %%
@@ -298,7 +293,7 @@ u_in=K*y;
 %  K=1*[-0.56   0       0.56    0;
 %           0  -0.56    0       0.56;
 %       0.218   0.218   0.218   0.218];
-% y = k*u;
+% y = k*u(1:3);
 % y(1)=Constrain(y(1),-A,A);
 % y(2)=Constrain(y(2),-A,A);
 % y(3)=Constrain(y(3),-A,A);
@@ -316,23 +311,84 @@ u_in=K*y;
 %       0.218   0.218   0.218   0.218];
 % e = [u(1);u(2);u(3)];
 % d = [u(4);u(5);u(6)];
-% % % % d(1)=Constrain(d(1),-0.39088,0.39088);
-% % % % d(2)=Constrain(d(2),-0.39088,0.39088);
-% % % % d(3)=Constrain(d(3),-0.3043,0.3043);
-% % % % e(1)=Constrain(e(1),-0.39088,0.39088);
-% % % % e(2)=Constrain(e(2),-0.39088,0.39088);
-% % % % e(3)=Constrain(e(3),-0.3043,0.3043);
 % M_d=crossover_point([0;0;0],d);
 % if (norm(d)>norm(M_d))
 %    d=M_d;
 % end
 % M_u=crossover_point(d,e);
-% if (norm(e)>=norm(M_u))
-%     U=M_u;
+% if (norm(e-d)>norm(M_u-d))
+%    U=M_u;
+% elseif(M_u(1)==0&&M_u(2)==0&&M_u(3)==0)
+%    U=d;
 % else
-%     U=d+e;
-% end
+%    U=d+e;
+% end   
 % y = Torque2surface3(U);
+% u_in=K*y;
+%%
+%% 几何方法1
+% %---------------------------------------------
+% u(1)=Constrain(u(1),-0.39088,0.39088);
+% u(2)=Constrain(u(2),-0.39088,0.39088);
+% u(3)=Constrain(u(3),-0.3043,0.3043);
+% %---------------------------------------------
+% K=1*[-0.56   0       0.56    0;
+%           0  -0.56    0       0.56;
+%       0.218   0.218   0.218   0.218];
+% % 平面方程
+% A1=0.3893;B1=0.3893;C1=1;D1=-0.3043;
+% A2=1;B2=0;C2=0;D2=-0.39088;
+% A3=0;B3=1;C3=0;D3=-0.39088;
+% e = u(1:3);
+% e1=fun3(e);
+% flag1=0;
+% flag2=0;
+% flag3=0;
+% M1 = fun1(A1,B1,C1,D1,[0;0;0],e1);
+% if (M1(1)<=0.39088 && M1(1)>=0 && M1(2)<=0.39088 && M1(2)>=0 && M1(3)<=0.3043 && M1(3)>=0)
+%     flag1=1;
+% end
+% 
+% if(dot([A2;B2;C2],e1)>1e-5)
+%     M2 = fun1(A2,B2,C2,D2,[0;0;0],e1);
+%     if (0.39088*M2(3)+0.1521*M2(2)-0.39088*0.1521<0 && M2(2)<0.39088 && M2(2)>=0 && M2(3)<0.1521 && M2(3)>=0)
+%         flag2=1;
+%     end
+% end
+% 
+% if(dot([A3;B3;C3],e1)>1e-5)
+%     M3 = fun1(A3,B3,C3,D3,[0;0;0],e1);
+%     if (M3(1)<0.39088 && M3(1)>=0 && 0.39088*M3(3)+0.1521*M3(1)-0.39088*0.1521<0 && M3(3)<0.1521 && M3(3)>=0)
+%         flag3=1;
+%     end
+% end
+% 
+% if flag1
+%     [~,~,r_m] = cart2sph(M1(1),M1(2),M1(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [a(1),a(2),a(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% if flag2
+%     [~,~,r_m] = cart2sph(M2(1),M2(2),M2(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [a(1),a(2),a(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% if flag3
+%     [~,~,r_m] = cart2sph(M3(1),M3(2),M3(3));
+%     [azimuth,elevation,r_e] = cart2sph(e(1),e(2),e(3));
+%     if r_e>r_m
+%         r_e=r_m;
+%     end
+%     [a(1),a(2),a(3)]=sph2cart(azimuth,elevation,r_e);
+% end
+% U=[a(1);a(2);a(3)]; 
+% y = Torque2surface1(U);
 % u_in=K*y;
 %%
 sys(1:4) = y;

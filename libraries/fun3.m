@@ -21,5 +21,6 @@ else
     elevation1=elevation;
 end 
 r1=r;
-[u(1),u(2),u(3)]=sph2cart(azimuth1,elevation1,r1);
+[a(1),a(2),a(3)]=sph2cart(azimuth1,elevation1,r1);
+u=[a(1);a(2);a(3)];
 end
