@@ -312,18 +312,29 @@ u_in=K*y;
 %       0.218   0.218   0.218   0.218];
 % e = [u(1);u(2);u(3)];
 % d = [u(4);u(5);u(6)];
-% M_d=crossover_point([0;0;0],d);
-% if (norm(d)>norm(M_d))
-%    d=M_d;
-% end
-% M_u=crossover_point(d,e);
+% M_u=crossover_point([0;0;0],e-d);% 起点d，终点e的射线和多面体的交点
 % if (norm(e-d)>norm(M_u))
 %    U=M_u;
-% elseif(M_u(1)==0&&M_u(2)==0&&M_u(3)==0)
-%    U=d;
+% % elseif(M_u(1)==0&&M_u(2)==0&&M_u(3)==0)
+% %    U=d;
 % else
-%    U=d+e;
+%    U=e-d;
 % end   
+% %-------------------------------------------------------
+% % M_d=crossover_point([0;0;0],d);
+% % if (norm(d)>norm(M_d))
+% %    d=M_d;
+% % end
+% % M_u=crossover_point(d,e);% 起点d，终点e的射线和多面体的交点
+% % if (norm(e-d)>norm(M_u-d))
+% %    U=M_u;
+% % elseif(M_u(1)==0&&M_u(2)==0&&M_u(3)==0)
+% %    U=d;
+% % else
+% %    U=d+e;
+% % end   
+% %-------------------------------------------------------
+% 
 % y = Torque2surface3(U);
 % u_in=K*y;
 %%
