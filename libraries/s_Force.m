@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 6;
+sizes.NumOutputs     = 9;
 sizes.NumInputs      = 11;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -362,6 +362,8 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 F=F_T+F_cs+F_p+F_m;
 sys(1:3) = F;
 sys(4:6) = F_p;
+sys(7:9) = F_m;
+
 
 
 % end mdlOutputs
