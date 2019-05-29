@@ -232,8 +232,7 @@ sys = [];
 function sys=mdlOutputs(t,x,u)
 
 %----------------------基本参数---------------------------------------------------
-global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y 
-global r_m_X r_m_Y e_m_X  e_m_Y e_p_X e_p_Y
+global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
 d_MS=1.1334291042e-7;
@@ -256,7 +255,6 @@ I_z=0.00562;
 I=[I_x 0 0;0 I_y 0;0 0 I_z];
 d2r=pi/180;
 r2d=180/pi;
-c_m=20*d2r;
 %--------------------------------------------------------
 c1=u(1);
 c2=u(2);
@@ -272,6 +270,7 @@ D_y=u(10);
 D_z=u(11);
 p=u(12);
 q=u(13);
+
 %------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -334,6 +333,11 @@ k_cs1=Attenuation1*d_cs;
 k_cs2=Attenuation2*d_cs;
 k_cs3=Attenuation3*d_cs;
 k_cs4=Attenuation4*d_cs;
+K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
+                  k_cs1   0    -k_cs3   0;
+                  0      0    0        0];
+F_T=[0;0;-T];%风扇拉力
+F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %==================================
 %      k_as=interp1(k_as_X,k_as_Y,alpha);
 %     k_ac=interp1(k_ac_X,k_ac_Y,alpha);
@@ -348,22 +352,27 @@ k_cs4=Attenuation4*d_cs;
 %     end
 %     k_az=-k_ac;
 %     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
-%     r_m=interp1(r_m_X,r_m_Y,alpha);
-%     F_m= -r_m*den*S*(V_c+V_i)*[(u-D_x);(v-D_y);0];%动量阻力
-    F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
-         -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
-                                     0                             ]; 
-    [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
-    F_p=[F_as*cos(beta);
-         F_as*sin(beta);
-         -F_ac          ];      
+r_m=interp1(r_m_X,r_m_Y,alpha);
+F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+kya=interp1(k_ra_X,k_ra_Y,alpha);
+kas=interp1(k_as_X,k_as_Y,alpha);
+kac=interp1(k_ac_X,k_ac_Y,alpha);
+ya=kya*Coupling;
+F_as=ya*Amplitude^2*kas;%升力
+F_ac=ya*Amplitude^2*kac;%阻力
+F_p=[F_as*cos(beta);
+     F_as*sin(beta);
+     -F_ac ];     
+F=F_T+F_cs+F_p+F_m;
+F_y=F_p(2);
+F_z=F_m(2);
 %----------------------------合力矩------------------------------------------
 %------------面对舵机力臂，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
 %======================================================
 D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       k_cs3*l_1         0;
                     0           -k_cs2*l_1       0         k_cs4*l_1;
-                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];           
+                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];          
 M_cs=D_cs*c;%舵面力矩
 %===============================================
 M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-

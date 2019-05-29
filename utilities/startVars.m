@@ -15,7 +15,7 @@ VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: P
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
-VSS_VISUALIZATION = 3; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
+VSS_VISUALIZATION = 0; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
 VSS_ACTUATORS = 0;     % 0: Feedthrough, 1: Linear Second Order, 2: Noninear Second Order
 
 % Bus definitions 
@@ -26,14 +26,17 @@ asbBusDefinitionStates;
 
 % Sampling rate
 Ts= 0.01;
-d2r=pi/180;
-r2d=180/pi;
 % Mass properties
 mass = 1.53;
 I_x=0.025483;
 I_y=0.025504;
 I_z=0.00562;
 inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
+
+
+
+
+
 if(VSS_COMMAND == 0)
 % % Initial contitions
 initDate = [2019 5 1 0 0 0];
@@ -67,9 +70,9 @@ load('cmdroll.mat');
 load('cmdpitch.mat');
 load('cmdyaw.mat');
 load('cmdh.mat');
-global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y 
-global r_m_X r_m_Y e_m_X  e_m_Y e_p_X e_p_Y
+global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 
+%-------------------r_sm≤Â÷µ±Ì-----------------------------------------------------------
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);
 r_sm_Y=data1(:,2);

@@ -231,8 +231,7 @@ sys = [];
 %
 function sys=mdlOutputs(t,x,u)
 
-global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y 
-global r_m_X r_m_Y e_m_X  e_m_Y e_p_X e_p_Y
+global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
 d_MS=1.1334291042e-7;
@@ -269,6 +268,7 @@ w=u(8);
 D_x=u(9);%机体系扰动
 D_y=u(10);
 D_z=u(11);
+
 %------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -352,13 +352,17 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
 %     r_m=interp1(r_m_X,r_m_Y,alpha);
 %     F_m= -r_m*den*S*(V_c+V_i)*[(u-D_x);(v-D_y);0];%动量阻力
-    F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
-         -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
-                                     0                             ]; 
-    [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
-    F_p=[F_as*cos(beta);
-         F_as*sin(beta);
-         -F_ac          ];      
+r_m=interp1(r_m_X,r_m_Y,alpha);
+F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+kya=interp1(k_ra_X,k_ra_Y,alpha);
+kas=interp1(k_as_X,k_as_Y,alpha);
+kac=interp1(k_ac_X,k_ac_Y,alpha);
+ya=kya*Coupling;
+F_as=ya*Amplitude^2*kas;%升力
+F_ac=ya*Amplitude^2*kac;%阻力
+F_p=[F_as*cos(beta);
+     F_as*sin(beta);
+     -F_ac ];     
 F=F_T+F_cs+F_p+F_m;
 sys(1:3) = F;
 sys(4:6) = F_p;
