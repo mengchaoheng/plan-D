@@ -165,10 +165,10 @@ function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes
 %
 sizes = simsizes;
 
-sizes.NumContStates  = 0;
+sizes.NumContStates  = 12;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 6;
-sizes.NumInputs      = 13;
+sizes.NumOutputs     = 12;
+sizes.NumInputs      = 8;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -177,7 +177,7 @@ sys = simsizes(sizes);
 %
 % initialize the initial conditions
 %
-x0  =[];
+x0  =zeros(12,1);
 
 %
 % str is always an empty matrix
@@ -205,31 +205,41 @@ simStateCompliance = 'UnknownSimState';
 %=============================================================================
 %
 function sys=mdlDerivatives(t,x,u)
-sys=[];
-
-% end mdlDerivatives
-
-%
-%=============================================================================
-% mdlUpdate
-% Handle discrete state updates, sample time hits, and major time step
-% requirements.
-%=============================================================================
-%
-function sys=mdlUpdate(t,x,u)
-
-sys = [];
-
-% end mdlUpdate
-
-%
-%=============================================================================
-% mdlOutputs
-% Return the block outputs.
-%=============================================================================
-%
-function sys=mdlOutputs(t,x,u)
-global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y  
+%-------------------r_sm插值表-----------------------------------------------------------
+data1 = load('r_sm.txt');
+r_sm_X=data1(:,1);
+r_sm_Y=data1(:,2);
+%-------------------k_rs插值表-----------------------------------------------------------
+data2 = load('k_rs.txt');
+k_rs_X=data2(:,1);
+k_rs_Y=data2(:,2);
+%-------------------k_as插值表-----------------------------------------------------------
+data3 = load('k_as_k_ac.txt');
+k_as_X=data3(:,1);
+k_as_Y=data3(:,2);
+%-------------------k_ac插值表-----------------------------------------------------------
+k_ac_X=data3(:,1);
+k_ac_Y=data3(:,3);
+%-------------------k_ra插值表-----------------------------------------------------------
+data4 = load('k_ra.txt');
+k_ra_X=data4(:,1);
+k_ra_Y=data4(:,2);
+%-------------------r_m插值表-----------------------------------------------------------
+data5 = load('r_m.txt');
+r_m_X=data5(:,1);
+r_m_Y=data5(:,2);
+%-------------------epsilon_m插值表-----------------------------------------------------------
+data6 = load('e_m.txt');
+e_m_X=data6(:,1);
+e_m_Y=data6(:,2);
+%-------------------epsilon_p插值表-----------------------------------------------------------
+data7 = load('e_p.txt');
+e_p_X=data7(:,1);
+e_p_Y=data7(:,2);
+%----------------------基本参数---------------------------------------------------
+D_x=0;
+D_y=0;
+D_z=0;
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
 d_MS=1.1334291042e-7;
@@ -244,30 +254,52 @@ I_prop=0.000029;
 S=0.040828138126052952;%面积
 den=1.225;%空气密度
 g=9.788;
+m=1.53;
+G=[0;0;m*g];
 I_x=0.025483;
 I_y=0.025504;
 I_z=0.00562;
-I= [I_x 0 0;0 I_y 0;0 0 I_z];
-m=1.53;
-G=[0;0;m*g];
+I=[I_x 0 0;0 I_y 0;0 0 I_z];
 d2r=pi/180;
 r2d=180/pi;
 c_m=20*d2r;
-c1=u(1);
+%========================================
+c1=u(1);%舵面转角，rad
 c2=u(2);
 c3=u(3);
 c4=u(4);
+speed=u(5);%转速
 c=[c1;c2;c3;c4];
-speed=u(5);
-D_x =u(6);
-D_y =u(7);
-D_z =u(8);
-u_=u(9);
-v=u(10);
-w=u(11);
-p=u(12);
-q=u(13);
-
+% u_=u(6);%机体系速度
+% v=u(7);
+% w=u(8);
+D_x=u(6);%机体系扰动
+D_y=u(7);
+D_z=u(8);
+% p=u(12);
+% q=u(13);
+X=x(1);
+Y=x(2);
+Z=x(3);
+P=[X;Y;Z];
+u_=x(4);
+v=x(5);
+w=x(6);
+V_b=[u;v;w];
+Roll=x(7);
+Pitch=x(8);
+Yaw=x(9);
+p=x(10);
+q=x(11);
+r=x(12);
+W=[p;q;r];
+Rn2b=Rn2bf(Roll,Pitch,Yaw);
+Rb2n=Rn2b';
+V_n=Rb2n*V_b;
+Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
+   0        cos(Roll)               -sin(Roll);
+   0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
+dx=zeros(12,1);
 %------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -340,7 +372,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     k_ac=interp1(k_ac_X,k_ac_Y,alpha);
 %     k_ra=interp1(k_ra_X,k_ra_Y,alpha);
 %     r_a=k_ra*Coupling;
-%     if (u_==D_x)&&(v==D_y) 
+%     if (u==D_x)&&(v==D_y) 
 %         k_ax=0;
 %         k_ay=0;
 %     else 
@@ -350,7 +382,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     k_az=-k_ac;
 %     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
 %     r_m=interp1(r_m_X,r_m_Y,alpha);
-%     F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
+%     F_m= -r_m*den*S*(V_c+V_i)*[(u-D_x);(v-D_y);0];%动量阻力
     F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
          -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
                                      0                             ]; 
@@ -359,8 +391,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
          F_as*sin(beta);
          -F_ac          ];      
 F=F_T+F_cs+F_p+F_m;
-F_y=F(2);
-F_z=F(3);
+
 %----------------------------合力矩------------------------------------------
 %------------面对舵机力臂，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
@@ -378,8 +409,42 @@ epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
-sys(1:3) = F;
-sys(4:6) = M;
+dx(1:3) = V_n;
+dx(4:6) = ( F + Rn2b*G )./m - cross(W,V_b);
+dx(7:9) = Q*W;
+dx(10:12) =I\(M - cross(W,(I*W)));
+sys=dx;
+
+
+% end mdlDerivatives
+
+%
+%=============================================================================
+% mdlUpdate
+% Handle discrete state updates, sample time hits, and major time step
+% requirements.
+%=============================================================================
+%
+function sys=mdlUpdate(t,x,u)
+
+sys = [];
+
+% end mdlUpdate
+
+%
+%=============================================================================
+% mdlOutputs
+% Return the block outputs.
+%=============================================================================
+%
+function sys=mdlOutputs(t,x,u)
+Rn2b=Rn2bf(x(7),x(8),x(9));
+Rb2n=Rn2b';
+V_n=Rb2n*x(4:6);
+sys(1:3) = x(1:3);
+sys(4:6) = V_n;
+sys(7:12) = x(7:12);
+
 
 
 
