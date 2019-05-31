@@ -167,9 +167,9 @@ sizes = simsizes;
 
 sizes.NumContStates  = 12;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 12;
+sizes.NumOutputs     = 25;
 sizes.NumInputs      = 8;
-sizes.DirFeedthrough = 1;
+sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
 sys = simsizes(sizes);
@@ -178,6 +178,14 @@ sys = simsizes(sizes);
 % initialize the initial conditions
 %
 x0  =zeros(12,1);
+global e_p e_m Ma alp Fp Fm bet
+alp=0;
+bet=0;
+e_p=0;
+e_m=0;
+Ma=[0;0;0];
+Fp=[0;0;0];
+Fm=[0;0;0];
 
 %
 % str is always an empty matrix
@@ -205,6 +213,7 @@ simStateCompliance = 'UnknownSimState';
 %=============================================================================
 %
 function sys=mdlDerivatives(t,x,u)
+global e_p e_m Ma alp Fp Fm bet
 %-------------------r_sm插值表-----------------------------------------------------------
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);
@@ -237,9 +246,6 @@ data7 = load('e_p.txt');
 e_p_X=data7(:,1);
 e_p_Y=data7(:,2);
 %----------------------基本参数---------------------------------------------------
-D_x=0;
-D_y=0;
-D_z=0;
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
 d_MS=1.1334291042e-7;
@@ -282,10 +288,13 @@ X=x(1);
 Y=x(2);
 Z=x(3);
 P=[X;Y;Z];
+% Vx=x(4);
+% Vy=x(5);
+% Vz=x(6);
 u_=x(4);
 v=x(5);
 w=x(6);
-V_b=[u;v;w];
+V_b=[u_;v;w];
 Roll=x(7);
 Pitch=x(8);
 Yaw=x(9);
@@ -299,7 +308,6 @@ V_n=Rb2n*V_b;
 Q=[1    sin(Roll)*tan(Pitch)    cos(Roll)*tan(Pitch);
    0        cos(Roll)               -sin(Roll);
    0    sin(Roll)*sec(Pitch)    cos(Roll)*sec(Pitch)];
-dx=zeros(12,1);
 %------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -328,7 +336,8 @@ if alpha>3.141
 elseif alpha<0
     alpha=0;
 end
-
+alp=alpha;
+bet=beta;
 %==========计算4个舵面衰减因子=============================
 %侧风飞行时，涵道内流场会往后压缩，靠近前方来流的舵上受力会减少，远离前方来流的舵上受力会增加
 r_sm=interp1(r_sm_X,r_sm_Y,alpha);
@@ -372,7 +381,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     k_ac=interp1(k_ac_X,k_ac_Y,alpha);
 %     k_ra=interp1(k_ra_X,k_ra_Y,alpha);
 %     r_a=k_ra*Coupling;
-%     if (u==D_x)&&(v==D_y) 
+%     if (u_==D_x)&&(v==D_y) 
 %         k_ax=0;
 %         k_ay=0;
 %     else 
@@ -382,7 +391,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
 %     k_az=-k_ac;
 %     F_p=r_a*Amplitude^2*[k_ax;k_ay;k_az];%外形气动力
 %     r_m=interp1(r_m_X,r_m_Y,alpha);
-%     F_m= -r_m*den*S*(V_c+V_i)*[(u-D_x);(v-D_y);0];%动量阻力
+%     F_m= -r_m*den*S*(V_c+V_i)*[(u_-D_x);(v-D_y);0];%动量阻力
     F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
          -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
                                      0                             ]; 
@@ -391,7 +400,9 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
          F_as*sin(beta);
          -F_ac          ];      
 F=F_T+F_cs+F_p+F_m;
-
+Fp=F_m;
+Fm=F_p;
+% F=F_T;
 %----------------------------合力矩------------------------------------------
 %------------面对舵机力臂，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
@@ -407,13 +418,16 @@ M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 %=========================================
 epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
+e_p=epsilon_p;
+e_m=epsilon_m;
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
+Ma=M_aero;
 M=M_prop+M_cs+M_ds+M_gyro+M_aero;
-dx(1:3) = V_n;
-dx(4:6) = ( F + Rn2b*G )./m - cross(W,V_b);
-dx(7:9) = Q*W;
-dx(10:12) =I\(M - cross(W,(I*W)));
-sys=dx;
+% M=M_cs;
+sys(1:3) = V_n;
+sys(4:6) = ( F + Rn2b*G )./m - cross(W,V_b);
+sys(7:9) = Q*W;
+sys(10:12) =I\(M - cross(W,(I*W)));
 
 
 % end mdlDerivatives
@@ -438,12 +452,24 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
+global e_p e_m Ma alp Fp Fm bet
 Rn2b=Rn2bf(x(7),x(8),x(9));
 Rb2n=Rn2b';
 V_n=Rb2n*x(4:6);
 sys(1:3) = x(1:3);
 sys(4:6) = V_n;
 sys(7:12) = x(7:12);
+
+sys(13)=alp;
+sys(14)=bet;
+sys(15)=e_p;
+sys(16)=e_m;
+sys(17:19)=Ma;
+sys(20:22)=Fp;
+sys(23:25)=Fm;
+
+
+
 
 
 
