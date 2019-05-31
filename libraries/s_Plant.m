@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 12;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 25;
+sizes.NumOutputs     = 28;
 sizes.NumInputs      = 8;
 sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -458,15 +458,16 @@ Rb2n=Rn2b';
 V_n=Rb2n*x(4:6);
 sys(1:3) = x(1:3);
 sys(4:6) = V_n;
-sys(7:12) = x(7:12);
+sys(7:9)=x(4:6);
+sys(10:15) = x(7:12);
 
-sys(13)=alp;
-sys(14)=bet;
-sys(15)=e_p;
-sys(16)=e_m;
-sys(17:19)=Ma;
-sys(20:22)=Fp;
-sys(23:25)=Fm;
+sys(16)=alp;
+sys(17)=bet;
+sys(18)=e_p;
+sys(19)=e_m;
+sys(20:22)=Ma;
+sys(23:25)=Fp;
+sys(26:28)=Fm;
 
 
 
