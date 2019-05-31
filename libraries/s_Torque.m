@@ -387,7 +387,7 @@ sys(1:3) = M;
 kk=[-0.56   0       0.56    0;
           0  -0.56    0       0.56;
       0.218   0.218   0.218   0.218];  
-sys(4:6) = M-kk*c;
+sys(4:6) = M_prop+M_ds+M_gyro+M_aero;
 
 
 % end mdlOutputs
