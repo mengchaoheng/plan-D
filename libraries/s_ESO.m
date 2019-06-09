@@ -226,6 +226,8 @@ beta1=100;beta2=700;beta3=3500;
 delta=0.1;
 alfa1=0.5;alfa2=0.25;
 epc0=x(1)-y;
+aa=1;
+ee=0.05;
 % 关于自抗扰技术的ESO
 % 假设某个变量x的微分方程可以表示为
 % x''=f+bu; 其中'表示导数
@@ -261,8 +263,11 @@ epc0=x(1)-y;
 % sys是下一时刻k+1的值，sys(1)对应z1(k+1),sys(2)对应z2(k+1),sys(3)对应z3(k+1)
 % 另外还有特别特别注意u在系统中代表的量，是升力T还是升力加速度a_t还是NED下加速度a，对应的ADRC结构都不相同
 sys(1)=x(1)+h*(x(2)-beta1*epc0);
-sys(2)=x(2)+h*(x(3)-beta2*fal(epc0,alfa1,delta)+u(2));
+sys(2)=x(2)+h*(x(3)-beta2*fal(epc0,alfa1,delta)+u(2)); % 此处u的量纲是力矩/转动惯量，即角加速度，估计的扰动也是角加速度，需乘以转动惯量得力矩
 sys(3)=x(3)-h*beta3*fal(epc0,alfa2,delta);
+% sys(1)=x(1)+h*(x(2)+3*ee*( (y-x(1)) / ee^2)^aa );
+% sys(2)=x(2)+h*(x(3)+3*( (y-x(1)) / ee^2)^(2*aa-1) + u(2));
+% sys(3)=x(3)+h*(1/ee)*( (y-x(1)) / ee^2)^(3*aa-2);
 
 
 % end mdlUpdate

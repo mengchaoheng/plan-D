@@ -275,7 +275,7 @@ K=1*[-0.56   0       0.56    0;
          0    0.8929    1.1468];
 A=0.349;   
 e = [u(1);u(2);u(3)];
-d = [u(4);u(5);u(6)];
+% d = [u(4);u(5);u(6)];
 % d = [0;0;0];
 M=crossover_point([0;0;0],e-d);
 if (norm(e-d)>norm(M))
@@ -286,6 +286,7 @@ end
 y = Torque2surface3(U);
 y=k*(e-d);
 y=servo(e);
+y=k*(e);
 % y(1)=Constrain(y(1),-A,A);
 % y(2)=Constrain(y(2),-A,A);
 % y(3)=Constrain(y(3),-A,A);

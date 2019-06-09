@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 6;
-sizes.NumInputs      = 13;
+sizes.NumInputs      = 17;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -270,7 +270,8 @@ D_y=u(10);
 D_z=u(11);
 p=u(12);
 q=u(13);
-
+r=u(14);
+d=[u(15);u(16);u(17)];
 %------------------------------------计算合力F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -333,8 +334,8 @@ k_cs1=Attenuation1*d_cs;
 k_cs2=Attenuation2*d_cs;
 k_cs3=Attenuation3*d_cs;
 k_cs4=Attenuation4*d_cs;
-K_cs=(V_c+V_i)^2*[0    -k_cs2   0   k_cs4;
-                  k_cs1   0    -k_cs3   0;
+K_cs=(V_c+V_i)^2*[0    -k_cs2   0   -k_cs4;
+                  k_cs1   0    k_cs3   0;
                   0      0    0        0];
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
@@ -370,9 +371,9 @@ F_z=F_m(2);
 %------------面对舵机力臂，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
 %======================================================
-D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       k_cs3*l_1         0;
-                    0           -k_cs2*l_1       0         k_cs4*l_1;
-                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];          
+D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       -k_cs3*l_1         0;
+                    0           -k_cs2*l_1       0         -k_cs4*l_1;
+                  -k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    -k_cs4*l_2];          
 M_cs=D_cs*c;%舵面力矩
 %===============================================
 M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-
@@ -382,12 +383,13 @@ M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
-M=M_prop+M_cs+M_ds+M_gyro+M_aero;
+M=M_prop+M_cs+M_ds+M_gyro+M_aero+d;
 sys(1:3) = M;
-kk=[-0.56   0       0.56    0;
-          0  -0.56    0       0.56;
-      0.218   0.218   0.218   0.218];  
-sys(4:6) = M-kk*c;
+kk=[-0.56   0       -0.56    0;
+          0  -0.56    0       -0.56;
+    -0.218   0.218   0.218   -0.218];  
+% sys(4:7) = (V_c+V_i)^2*[k_cs1;k_cs2;k_cs3;k_cs4];
+sys(4:6)=I\(M-cross([p;q;r],I*[p;q;r])-kk*c);
 
 
 % end mdlOutputs
