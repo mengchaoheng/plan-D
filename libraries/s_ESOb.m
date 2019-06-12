@@ -1,4 +1,4 @@
-function [sys,x0,str,ts,simStateCompliance] = s_ESOa(t,x,u,flag)
+function [sys,x0,str,ts,simStateCompliance] = s_ESOb(t,x,u,flag)
 %SFUNTMPL General MATLAB S-Function Template
 %   With MATLAB S-functions, you can define you own ordinary differential
 %   equations (ODEs), discrete system equations, and/or just about
@@ -287,25 +287,25 @@ epc0=x(1:3)-y;
 % 注意对应关系，x是当前时刻k的值且是向量x(1)对应z1(k),x(2)对应z2(k),x(3)对应z3(k)
 % sys是下一时刻k+1的值，sys(1)对应z1(k+1),sys(2)对应z2(k+1),sys(3)对应z3(k+1)
 % 另外还有特别特别注意u在系统中代表的量，是升力T还是升力加速度a_t还是NED下加速度a，对应的ADRC结构都不相同
-sys(1:3)=x(1:3)+h*(x(4:6)-beta1*epc0);
-sys(4:6)=x(4:6)+h*(x(7:9)-beta2*[fal(epc0(1),alfa1,delta);fal(epc0(2),alfa1,delta);fal(epc0(3),alfa1,delta)]+U); % 此处u的量纲是力矩/转动惯量，即角加速度，估计的扰动也是角加速度，需乘以转动惯量得力矩
-sys(7:9)=x(7:9)-h*beta3*[fal(epc0(1),alfa2,delta);fal(epc0(2),alfa2,delta);fal(epc0(3),alfa2,delta)];
+% sys(1:3)=x(1:3)+h*(x(4:6)-beta1*epc0);
+% sys(4:6)=x(4:6)+h*(x(7:9)-beta2*[fal(epc0(1),alfa1,delta);fal(epc0(2),alfa1,delta);fal(epc0(3),alfa1,delta)]+U); % 此处u的量纲是力矩/转动惯量，即角加速度，估计的扰动也是角加速度，需乘以转动惯量得力矩
+% sys(7:9)=x(7:9)-h*beta3*[fal(epc0(1),alfa2,delta);fal(epc0(2),alfa2,delta);fal(epc0(3),alfa2,delta)];
 
 %=============================================================================
-% a_i=0.7;% 0.5-1之间
-% ee=0.05;
-% r=-epc0./ee^2;
-% a=1.2;b=1.2;c=1.2;
-% % K1=3*b;K2=3*b^2;K3=b^3;
-% K1=a+b+c;K2=a*b+a*c+b*c;K3=a*b*c;
-% eig([-K1 1 0;-K2 0 1;-K3 0 0])
-% K1=diag([K1 K1 1.5*K1]);
-% K2=diag([K2 K2 1.5^2*K2]);
-% K3=diag([K3 K3 1.5^3*K3]);
-% 
-% sys(1:3)=x(1:3)+h*(x(4:6)+K1*ee*[nonlinear_eso(a_i,1,r(1));nonlinear_eso(a_i,1,r(2));nonlinear_eso(a_i,1,r(3))]);
-% sys(4:6)=x(4:6)+h*(x(7:9)+K2*[nonlinear_eso(a_i,2,r(1));nonlinear_eso(a_i,2,r(2));nonlinear_eso(a_i,2,r(3))] + U);
-% sys(7:9)=x(7:9)+h*(K3/ee)*[nonlinear_eso(a_i,3,r(1));nonlinear_eso(a_i,3,r(2));nonlinear_eso(a_i,3,r(3))];
+a_i=0.7;% 0.5-1之间
+ee=0.05;
+r=-epc0./ee^2;
+a=1;b=1;c=1;
+% K1=3*b;K2=3*b^2;K3=b^3;
+K1=a+b+c;K2=a*b+a*c+b*c;K3=a*b*c;
+eig([-K1 1 0;-K2 0 1;-K3 0 0])
+K1=diag([K1 K1 1.5*K1]);
+K2=diag([K2 K2 1.5^2*K2]);
+K3=diag([K3 K3 1.5^3*K3]);
+
+sys(1:3)=x(1:3)+h*(x(4:6)+K1*ee*[nonlinear_eso(a_i,1,r(1));nonlinear_eso(a_i,1,r(2));nonlinear_eso(a_i,1,r(3))]);
+sys(4:6)=x(4:6)+h*(x(7:9)+K2*[nonlinear_eso(a_i,2,r(1));nonlinear_eso(a_i,2,r(2));nonlinear_eso(a_i,2,r(3))] + U);
+sys(7:9)=x(7:9)+h*(K3/ee)*[nonlinear_eso(a_i,3,r(1));nonlinear_eso(a_i,3,r(2));nonlinear_eso(a_i,3,r(3))];
 
 
 
