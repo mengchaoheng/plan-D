@@ -28,14 +28,12 @@ n=[ A  B  C -1;
     0  1  0 a];
 for i=1:12
     aa=u-s;
-    if (aa(1)==0 && aa(2)==0 && aa(3)==0)
-        M=[0;0;0];% 没有交点
-        return;
-    elseif( abs( dot( n(i,1:3)'/norm(n(i,1:3)'),(u-s)/norm(u-s) ) )<1e-6) % 垂直
+    M=[0;0;0];% 没有交点
+    if( abs( dot( n(i,1:3)'/norm(n(i,1:3)'),(aa)/norm(aa) ) )<1e-6) % 垂直
         continue;
     else % 不垂直
-        Mi=fun_t(n(i,:),u-s,s);
-        if( dot((u-s)/norm(u-s),(Mi-s)/norm(Mi-s))<1e-6)    % 钝角
+        Mi=fun_t(n(i,:),aa,s);
+        if( sign(dot((aa)/norm(aa),(Mi-s)/norm(Mi-s)))<0)    % 钝角
             continue;
         else   % 锐角
             if(belong(i,Mi))
@@ -45,5 +43,5 @@ for i=1:12
         end
     end
 end
-disp('error');
+
 end

@@ -6,43 +6,43 @@
 Roll_d_1=roll_d.Data;
 Yaw_d_1=yaw_d.Data;
 Pitch_d_1=pitch_d.Data;
-% pid D_s 无扰动补偿，D_s
+% pid D 无扰动补偿，D
 Roll1_1=roll.Data;
 Yaw1_1=yaw.Data;
 Pitch1_1=pitch.Data;
 turb1_1=turbulent.Data;
 turb_e1_1=turbulent_e.Data;
-% pid D 无扰动补偿，D
+% pid D_s 无扰动补偿，D_s
 Roll2_1=roll.Data;
 Yaw2_1=yaw.Data;
 Pitch2_1=pitch.Data;
 turb2_1=turbulent.Data;
 turb_e2_1=turbulent_e.Data;
 %-----------------------------------------------
-%==============二、无输入、外阶跃扰动70==[0;0.3;0]==============
+%==============二、无输入、外阶跃扰动70==[0;0.3sin();0]==============
 %-------------------------------------------------
 Roll_d_2=roll_d.Data;
 Yaw_d_2=yaw_d.Data;
 Pitch_d_2=pitch_d.Data;
-% pid D_s 扰动补偿 D_s
+% pid D 无扰动补偿 D
 Roll1_2=roll.Data;
 Yaw1_2=yaw.Data;
 Pitch1_2=pitch.Data;
 turb1_2=turbulent.Data;
 turb_e1_2=turbulent_e.Data;
-% pid D 扰动补偿 D
+% pid D_s 无扰动补偿 D_s
 Roll2_2=roll.Data;
 Yaw2_2=yaw.Data;
 Pitch2_2=pitch.Data;
 turb2_2=turbulent.Data;
 turb_e2_2=turbulent_e.Data;
-% pid D_s 无扰动补偿 D_s
+% pid D 扰动补偿 D
 Roll3_2=roll.Data;
 Yaw3_2=yaw.Data;
 Pitch3_2=pitch.Data;
 turb3_2=turbulent.Data;
 turb_e3_2=turbulent_e.Data;
-% pid D 无扰动补偿 D
+% pid D_s 扰动补偿 D_s
 Roll4_2=roll.Data;
 Yaw4_2=yaw.Data;
 Pitch4_2=pitch.Data;
@@ -55,25 +55,25 @@ turb_e4_2=turbulent_e.Data;
 Roll_d_3=roll_d.Data;
 Yaw_d_3=yaw_d.Data;
 Pitch_d_3=pitch_d.Data;
-% pid D_s 扰动补偿 D_s
+% pid D 无扰动补偿 D
 Roll1_3=roll.Data;
 Yaw1_3=yaw.Data;
 Pitch1_3=pitch.Data;
 turb1_3=turbulent.Data;
 turb_e1_3=turbulent_e.Data;
-% pid D 扰动补偿 D
+% pid D_s 无扰动补偿 D_s
 Roll2_3=roll.Data;
 Yaw2_3=yaw.Data;
 Pitch2_3=pitch.Data;
 turb2_3=turbulent.Data;
 turb_e2_3=turbulent_e.Data;
-% pid D_s 无扰动补偿 D_s
+% pid D 扰动补偿 D
 Roll3_3=roll.Data;
 Yaw3_3=yaw.Data;
 Pitch3_3=pitch.Data;
 turb3_3=turbulent.Data;
 turb_e3_3=turbulent_e.Data;
-% pid D 无扰动补偿 D
+% pid D_s 扰动补偿 D_s
 Roll4_3=roll.Data;
 Yaw4_3=yaw.Data;
 Pitch4_3=pitch.Data;
@@ -86,60 +86,24 @@ r2d=180/pi;
 time=0:0.01:11;
 figure,%欧拉角% 
 subplot(2,1,1);
-% subplot(3,1,1);
-% plot(time,turb1_1(:,1),'r-');hold on;
-% plot(time,turb2_1(:,1),'k-');hold on;
-% plot(time,turb_e1_1(:,1),'b--');hold on;
-% plot(time,turb_e2_1(:,1),'g-.');grid on;
-% title('扰动估计');xlabel('时间（s）');ylabel('扰动在X_b轴的投影')
-% axis([20 50 -12 8]);
-% legend('方案1扰动真实值','方案2扰动真实值','方案1扰动估计值','方案2扰动估计值');
-% subplot(3,1,2);
 plot(time,turb1_1(3400:4500,2),'r-');hold on;
 plot(time,turb2_1(3400:4500,2),'k--');hold on;
-plot(time,turb_e1_1(3400:4500,2),'g-');hold on;
-plot(time,turb_e2_1(3400:4500,2),'b-.');grid on;
+plot(time,turb_e1_1(3400:4500,2),'b-.');hold on;
+plot(time,turb_e2_1(3400:4500,2),'g-');grid on;
 title('扰动估计','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('扰动 (rad/s^2)','FontWeight','bold')
 axis([0 11 -8 5]);
-% legend('f_1+d_1','FontWeight','bold','f_2+d_2','FontWeight','bold','方案1扰动估计值','FontWeight','bold','方案2扰动估计值','FontWeight','bold');
 legend('\bf{f_1+d_1}','\bf{f_2+d_2}','\bf{ESO1估计值}','\bf{ESO2估计值}');
 
-% % subplot(3,1,3);
-% plot(time,turb1_1(:,3),'r-');hold on;
-% plot(time,turb2_1(:,3),'k-');hold on;
-% plot(time,turb_e1_1(:,3),'b--');hold on;
-% plot(time,turb_e2_1(:,3),'g-.');grid on;
-% title('扰动估计');xlabel('时间（s）');ylabel('扰动在Z_b轴的投影')
-% axis([20 50 -35 -5]);
-% legend('方案1扰动真实值','方案2扰动真实值','方案1扰动估计值','方案2扰动估计值');
-
-% time=0:0.01:81;
-% figure,%欧拉角
-% subplot(3,1,1);
-% plot(time,Roll_d_1*r2d,'r-');hold on;
-% plot(time,Roll1_1*r2d,'b--');hold on;
-% plot(time,Roll2_1*r2d,'g-.');grid on;
-% title('动态响应');xlabel('时间（s）');ylabel('力矩(N*m)')
-% axis([20 50 -30 30]);
-% legend('给定','无扰动补偿，D_s','无扰动补偿，D');
-% subplot(3,1,2);
 subplot(2,1,2);
 t=1:30:1100;
 plot(time,Pitch_d_1(3400:4500)*r2d,'r-');hold on;
-plot(time,Pitch1_1(3400:4500)*r2d,'Color','g','LineStyle','--','Marker','^','MarkerIndices',t);hold on;
-plot(time,Pitch2_1(3400:4500)*r2d,'Color','b','LineStyle','-.','Marker','+','MarkerIndices',t);grid on;
+plot(time,Pitch1_1(3400:4500)*r2d,'Color','b','LineStyle','--','Marker','+','MarkerIndices',t);hold on;
+plot(time,Pitch2_1(3400:4500)*r2d,'Color','g','LineStyle','-.','Marker','^','MarkerIndices',t);grid on;
 xlabel('t (s)','FontWeight','bold');
 ylabel('\theta (\circ)','FontWeight','bold')
-title('俯仰角响应','FontWeight','bold');% xlabel('时间（s）');ylabel('力矩(N*m)')
+title('俯仰角响应','FontWeight','bold');
 axis([0 11 -40 40]);
 legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}');
-% subplot(3,1,3);
-% plot(time,Yaw_d_1*r2d,'r-');hold on;
-% plot(time,Yaw1_1*r2d,'b--');hold on;
-% plot(time,Yaw2_1*r2d,'g-.');grid on;
-% title('动态响应');xlabel('时间（s）');ylabel('力矩(N*m)')
-% axis([20 50 0 8]);
-% legend('给定','无扰动补偿，D_s','无扰动补偿，D');
 %======================================================
 % figure,%欧拉角
 % subplot(3,1,1);
@@ -160,35 +124,22 @@ legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}');
 % title('扰动估计');xlabel('时间（s）');ylabel('力矩(N*m)')
 % axis([0 81 -70 0]);
 % legend('真实值D_s','真实值D');
-%==========================2==========================
-time=0:0.01:22;
-t=100:150:2200;
-figure,%
-% subplot(2,1,1);
-plot(time,Pitch_d_2(2800:5000)*r2d,'k-');hold on;
-plot(time,Pitch1_2(2800:5000)*r2d,'Color','r','LineStyle','-','Marker','^','MarkerIndices',t);hold on;
-plot(time,Pitch2_2(2800:5000)*r2d,'Color','b','LineStyle','-.','Marker','+','MarkerIndices',t);hold on;
-% axis([0 22 -4 5]);
-% title('有扰动补偿的俯仰角响应');
-% xlabel('\bf{t\ (s)}','Interpreter','latex');
-% ylabel('$\bf{\theta\ (\circ)}$','Interpreter','LaTex');
-% legend('\theta_d','\theta_1','\theta_2');
-% subplot(2,1,2);
-% plot(time,Pitch_d_2(2800:5000)*r2d,'k-');hold on;
-plot(time,Pitch3_2(2800:5000)*r2d,'Color','g','LineStyle','--','Marker','*','MarkerIndices',t);hold on;
-plot(time,Pitch4_2(2800:5000)*r2d,'Color','[1 0.5 0]','LineStyle','-.','Marker','o','MarkerIndices',t);grid on;
-axis([0 22 -3.6 8]);
-% axis([40 60 -20 20]);
-
-% title('无扰动补偿的俯仰角响应');
-% xlabel('t\ (s)','Interpreter','latex');
-% ylabel('$\theta\ (\circ)$','Interpreter','LaTex');
-% legend('\theta_d','\theta_3','\theta_4');
-title('阶跃扰动下俯仰角响应','FontWeight','bold');
-xlabel('t (s)','FontWeight','bold')
-ylabel('\theta (\circ)','FontWeight','bold')%ylabel('\bf{\theta\ (\circ)}','FontWeight','bold')
-legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}','\bf{\theta_3}','\bf{\theta_4}');
-% %==========================2===================================
+%==========================21==========================
+% time=0:0.01:30;
+% t=100:150:3000;
+% figure,%
+% % subplot(2,1,1);
+% plot(time,Pitch_d_2(2800:5800)*r2d,'k-');hold on;
+% plot(time,Pitch1_2(2800:5800)*r2d,'Color','g','LineStyle','--','Marker','*','MarkerIndices',t);hold on;
+% plot(time,Pitch2_2(2800:5800)*r2d,'Color','[1 0.5 0]','LineStyle','-.','Marker','o','MarkerIndices',t);hold on;
+% plot(time,Pitch3_2(2800:5800)*r2d,'Color','b','LineStyle','-.','Marker','+','MarkerIndices',t);hold on;
+% plot(time,Pitch4_2(2800:5800)*r2d,'Color','r','LineStyle','-','Marker','^','MarkerIndices',t);grid on;
+% axis([0 30 -7 7]);
+% title('正弦扰动下俯仰角响应','FontWeight','bold');
+% xlabel('t (s)','FontWeight','bold')
+% ylabel('\theta (\circ)','FontWeight','bold')%ylabel('\bf{\theta\ (\circ)}','FontWeight','bold')
+% legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}','\bf{\theta_3}','\bf{\theta_4}');
+% %==========================22===================================
 % time=0:0.01:70;
 % figure,%
 % % subplot(2,1,1);
@@ -243,8 +194,26 @@ legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}','\bf{\theta_3}','\bf{\the
 % % % axis([40 60 -15 15]);
 % % % axis([0 81 -15 15]);
 % % legend('扰动补偿 D_s真值','扰动补偿 D_s估计值','扰动补偿 D真值','扰动补偿 D估计值','无扰动补偿 D_s真值','无扰动补偿 D_s估计值','无扰动补偿 D真值','无扰动补偿 D估计值');
-% %--------------------------------------------------------
-
+% %-----------------------23--------------------------------
+figure,%
+subplot(2,1,1);
+plot(time,Pitch_d_2(2800:5800)*r2d,'k-');hold on;
+plot(time,Pitch1_2(2800:5800)*r2d,'Color','g','LineStyle','--','Marker','*','MarkerIndices',t);hold on;
+plot(time,Pitch2_2(2800:5800)*r2d,'Color','[1 0.5 0]','LineStyle','-.','Marker','o','MarkerIndices',t);grid on;
+axis([0 30 -7 7]);
+title('无扰动补偿俯仰角响应','FontWeight','bold');
+xlabel('t (s)','FontWeight','bold')
+ylabel('\theta (\circ)','FontWeight','bold')%ylabel('\bf{\theta\ (\circ)}','FontWeight','bold')
+legend('\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}');
+subplot(2,1,2);
+plot(time,Pitch_d_2(2800:5800)*r2d,'k-');hold on;
+plot(time,Pitch3_2(2800:5800)*r2d,'Color','b','LineStyle','-.','Marker','+','MarkerIndices',t);hold on;
+plot(time,Pitch4_2(2800:5800)*r2d,'Color','r','LineStyle','-','Marker','^','MarkerIndices',t);grid on;
+axis([0 30 -0.5 0.5]);
+title('有扰动补偿俯仰角响应','FontWeight','bold');
+xlabel('t (s)','FontWeight','bold')
+ylabel('\theta (\circ)','FontWeight','bold')%ylabel('\bf{\theta\ (\circ)}','FontWeight','bold')
+legend('\bf{\theta_d}','\bf{\theta_3}','\bf{\theta_4}');
 %========================31=====================================
 time=0:0.01:9;
 t=50:120:900;
@@ -314,32 +283,32 @@ legend('\bf{\phi_d}','\bf{\phi_1}','\bf{\phi_2}','\bf{\phi_3}','\bf{\phi_4}');
 
 %========================32=====================================
 time=0:0.01:5;
-t1=50:35:500;
+t1=50:40:500;
 t2=50:28:500;
 t3=50:40:500;
 figure,%
 % subplot(3,1,1);%[1 0 1][0 0.74902 1][0.48627 0.798824 0]
 plot(time,Roll_d_3(2950:3450)*r2d,'k-','Marker','hexagram','MarkerIndices',t1);hold on;
-plot(time,Roll1_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','^','MarkerIndices',t1);hold on;
-plot(time,Roll2_3(2950:3450)*r2d,'b-.','Marker','^','MarkerIndices',t1);hold on;
-plot(time,Roll3_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','^','MarkerIndices',t1);hold on;
-plot(time,Roll4_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','^','MarkerIndices',t1);grid on;
+plot(time,Roll1_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','^','MarkerIndices',t1);hold on;
+plot(time,Roll2_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','^','MarkerIndices',t1);hold on;
+plot(time,Roll3_3(2950:3450)*r2d,'b-.','Marker','^','MarkerIndices',t1);hold on;
+plot(time,Roll4_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','^','MarkerIndices',t1);grid on;
 
 hold on;
 plot(time,Pitch_d_3(2950:3450)*r2d,'k-','Marker','square','MarkerIndices',t2);hold on;
-plot(time,Pitch1_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','+','MarkerIndices',t2);hold on;
-plot(time,Pitch2_3(2950:3450)*r2d,'b-.','Marker','+','MarkerIndices',t2);hold on;
-plot(time,Pitch3_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','+','MarkerIndices',t2);hold on;
-plot(time,Pitch4_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','+','MarkerIndices',t2);grid on;
+plot(time,Pitch1_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','+','MarkerIndices',t2);hold on;
+plot(time,Pitch2_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','+','MarkerIndices',t2);hold on;
+plot(time,Pitch3_3(2950:3450)*r2d,'b-.','Marker','+','MarkerIndices',t2);hold on;
+plot(time,Pitch4_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','+','MarkerIndices',t2);grid on;
 hold on;
 plot(time,Yaw_d_3(2950:3450)*r2d,'k-','Marker','diamond','MarkerIndices',t3);hold on;
-plot(time,Yaw2_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','o','MarkerIndices',t3);hold on;
-plot(time,Yaw1_3(2950:3450)*r2d,'b-.','Marker','o','MarkerIndices',t3);hold on;
-plot(time,Yaw3_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','o','MarkerIndices',t3);hold on;
-plot(time,Yaw4_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','o','MarkerIndices',t3);grid on;
+plot(time,Yaw1_3(2950:3450)*r2d,'Color','[1 0.5 0]','LineStyle',':','Marker','o','MarkerIndices',t3);hold on;
+plot(time,Yaw2_3(2950:3450)*r2d,'LineStyle','--','Color','g','Marker','o','MarkerIndices',t3);hold on;
+plot(time,Yaw4_3(2950:3450)*r2d,'b-.','Marker','o','MarkerIndices',t3);hold on;
+plot(time,Yaw3_3(2950:3450)*r2d,'Color','r','LineStyle','-','Marker','o','MarkerIndices',t3);grid on;
 axis([0 5 -4 43]);
-title('姿态响应','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('角度 (\circ)','FontWeight','bold')
+title('阶跃响应','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('角度 (\circ)','FontWeight','bold')
 % % legend({'\psi_d','\psi_1','\psi_2','\psi_3','\psi_4'},{'\theta_d','\theta_1','\theta_2','\theta_3','\theta_4'},{'\phi_d','\phi_1','\phi_2','\phi_3','\phi_4'},'FontWeight','bold');
 % % % legend( {'\theta_d','\theta_1','\theta_2','\theta_3','\theta_4'},'FontWeight','bold');
 % % % legend({'\phi_d','\phi_1','\phi_2','\phi_3','\phi_4'},'FontWeight','bold');
-legend('\bf{\psi_d}','\bf{\psi_1}','\bf{\psi_2}','\bf{\psi_3}','\bf{\psi_4}','\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}','\bf{\theta_3}','\bf{\theta_4}','\bf{\phi_d}','\bf{\phi_1}','\bf{\phi_2}','\bf{\phi_3}','\bf{\phi_4}');
+legend('\bf{\phi_d}','\bf{\phi_1}','\bf{\phi_2}','\bf{\phi_3}','\bf{\phi_4}','\bf{\theta_d}','\bf{\theta_1}','\bf{\theta_2}','\bf{\theta_3}','\bf{\theta_4}','\bf{\psi_d}','\bf{\psi_1}','\bf{\psi_2}','\bf{\psi_3}','\bf{\psi_4}');

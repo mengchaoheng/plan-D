@@ -331,8 +331,8 @@ k_cs1=Attenuation1*d_cs;
 k_cs2=Attenuation2*d_cs;
 k_cs3=Attenuation3*d_cs;
 k_cs4=Attenuation4*d_cs;
-K_cs=(V_c+V_i)^2*[0    -k_cs2   0   -k_cs4;
-                  k_cs1   0    k_cs3   0;
+K_cs=(V_c+V_i)^2*[0    -k_cs2   0    k_cs4;
+                  k_cs1   0    -k_cs3   0;
                   0      0    0        0];
 F_T=[0;0;-T];%风扇拉力
 F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
