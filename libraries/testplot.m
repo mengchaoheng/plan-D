@@ -1,11 +1,15 @@
 % clear all;
 % clc;
 % close all;
-data=xlsread('DATA6-16.xlsx');
+% data=xlsread('DATA6-16.xlsx');
+% 
+% Roll=data(1:7001,1)/100;
+% Pitch=data(1:7001,2)/100;
+% Yaw=data(1:7001,3)/100;
 
-Roll=data(1:7001,1)/100;
-Pitch=data(1:7001,2)/100;
-Yaw=data(1:7001,3)/100;
+
+
+
 d2r=pi/180;
 r2d=180/pi;
 % for i=1:1:8000

@@ -49,23 +49,24 @@ end
 if(VSS_COMMAND ==2)
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 -3.390000000000000];
+initPosNED = [0 0 -2.51000000000000];
 initVb = [0 0 0];
-initEuler = [0.002443460952792 -0.035604716740684 0.084124869946127];
+initEuler = [0.0183259571459405 0.0314159265358979 1.64916161020944];
 initAngRates = [0 0 0];
 end
 %% Custom Variables
 % Add your variables here:
 
 % controlldata = xlsread('controll');
+% controlldata = load('datain.txt');
 % rolldata=controlldata(:,1)./(100*r2d);
 % pitchdata=controlldata(:,2)./(100*r2d);
 % yawdata=controlldata(:,3)./(100*r2d);
 % hdata=controlldata(:,5)./(100);
-% cmdroll = timeseries(rolldata,0:Ts:Ts*(length(controlldata)-1));
-% cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(controlldata)-1));
-% cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(controlldata)-1));
-% cmdh = timeseries(hdata,0:Ts:Ts*(length(controlldata)-1));
+% cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
+% cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
+% cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
+% cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 load('cmdroll.mat');
 load('cmdpitch.mat');
 load('cmdyaw.mat');

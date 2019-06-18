@@ -80,8 +80,31 @@ Pitch4_3=pitch.Data;
 turb4_3=turbulent.Data;
 turb_e4_3=turbulent_e.Data;
 %-------------------------------------------------------------------
+roll_r=controlldata(:,1)./(100*r2d);
+pitch_r=controlldata(:,2)./(100*r2d);
+yaw_r=controlldata(:,3)./(100*r2d);
 d2r=pi/180;
 r2d=180/pi;
+%=================================================
+%========================0======================
+time=0:0.01:20;
+figure,%Å·À­½Ç% 
+
+t=1:30:2000;
+plot(time,Roll_d_1*r2d,'k-');hold on;
+plot(time,Roll1_3*r2d,'Color','b','LineStyle','-');hold on;
+plot(time,Roll1_1*r2d,'Color','r','LineStyle','-');hold on;
+plot(time,Roll2_1*r2d,'Color','c','LineStyle','-');hold on;
+plot(time,roll_r(1000:3000)*r2d,'Color','g','LineStyle','-');grid on;
+xlabel('t (s)','FontWeight','bold');
+ylabel('\theta (\circ)','FontWeight','bold')
+title('¸©Ñö½ÇÏìÓ¦','FontWeight','bold');
+% axis([0 11 -40 40]);
+legend('\bf{\theta_d}','wu','xian','fei','\bf{\theta_r}');
+
+
+
+
 %========================1======================
 time=0:0.01:11;
 figure,%Å·À­½Ç% 
