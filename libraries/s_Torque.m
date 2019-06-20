@@ -241,6 +241,9 @@ c_b=-0.026179938;%‰ˆŒ–
 d_cs=0.0149564;
 l_1=0.17078793;
 l_2=0.06647954;
+% l_1=0.18078793;
+% l_2=0.07647954;
+
 k_q0=0.290827;
 k_q1=-0.02182;
 I_prop=0.000029;
@@ -373,7 +376,8 @@ M_prop=[0;0;d_MS*speed^2];%∑Á…»≈§æÿ+
 %======================================================
 D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       k_cs3*l_1         0;
                     0           -k_cs2*l_1       0         k_cs4*l_1;
-                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];          
+                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];   
+
 M_cs=D_cs*c;%∂Ê√Ê¡¶æÿ
 %===============================================
 M_ds=[0;0;(V_c+V_i)*speed*d_ds];%∫≠µ¿∆Ω∫‚≈§æÿ-
@@ -384,12 +388,14 @@ epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
 M=M_prop+M_cs+M_ds+M_gyro+M_aero+d;
+
 sys(1:3) = M;
 kk=[-0.56   0        0.56    0;
           0  -0.56    0        0.56;
      0.218   0.218   0.218    0.218];  
 % sys(4:7) = (V_c+V_i)^2*[k_cs1;k_cs2;k_cs3;k_cs4];
 sys(4:6)=I\(M-cross([p;q;r],I*[p;q;r])-kk*c);
+% 
 
 
 % end mdlOutputs

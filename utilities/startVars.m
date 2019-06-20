@@ -32,7 +32,8 @@ I_x=0.025483;
 I_y=0.025504;
 I_z=0.00562;
 inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
-
+d2r=pi/180;
+r2d=180/pi;
 
 
 
@@ -49,16 +50,15 @@ end
 if(VSS_COMMAND ==2)
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 -2.51000000000000];
+initPosNED = [0 0 -1.04];
 initVb = [0 0 0];
-initEuler = [0.0183259571459405 0.0314159265358979 1.64916161020944];
+initEuler = [0.035779249665884 -0.005061454830784 -1.636769772520282];
 initAngRates = [0 0 0];
 end
 %% Custom Variables
 % Add your variables here:
-
+%===========================1旧版====================================
 % controlldata = xlsread('controll');
-% controlldata = load('datain.txt');
 % rolldata=controlldata(1000:3000,4)./(100*r2d);
 % pitchdata=controlldata(1000:3000,5)./(100*r2d);
 % yawdata=controlldata(1000:3000,6)./(100*r2d);
@@ -67,6 +67,18 @@ end
 % cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
 % cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
 % cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
+
+%===========================2新版结合 testplot.m =====================================
+% data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
+% roll_d=data(10000:15000,4).*d2r/100;
+% pitch_d=data(10000:15000,5).*d2r/100;
+% yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
+% h_e=data(6000:9000,19)/100;% 观测输出高度
+% cmdroll = timeseries(roll_d,0:Ts:Ts*(length(roll_d)-1));
+% cmdpitch = timeseries(pitch_d,0:Ts:Ts*(length(pitch_d)-1));
+% cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
+% cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
+%====================================================================
 load('cmdroll.mat');
 load('cmdpitch.mat');
 load('cmdyaw.mat');
