@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 9;
+sizes.NumOutputs     = 3;
 sizes.NumInputs      = 11;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -365,8 +365,8 @@ F_p=[F_as*cos(beta);
      -F_ac ];     
 F=F_T+F_cs+F_p+F_m;
 sys(1:3) = F;
-sys(4:6) = F_p;
-sys(7:9) = F_m;
+% sys(4:6) = F_p;
+% sys(7:9) = F_m;
 
 
 
