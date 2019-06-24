@@ -249,7 +249,7 @@ else
     U=e;
 end   
 y = Torque2surface3(U);
-y=D*(e);
+y=D*(U);
 %%
 sys(1:4) = y;
 sys(5:7) = U;

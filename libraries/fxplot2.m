@@ -1,33 +1,33 @@
 
 d2r=pi/180;
 r2d=180/pi;
-data=xlsread('DATAfx27Dnofbturbtest.xlsx');%4475-5475
-% data=xlsread('DATAfx20fbsteptest.xlsx');%4475-5475
-roll_e=data(4475:5475,1)./100;
-pitch_e=data(4475:5475,2)./100;
-yaw_e=data(4475:5475,3)./100;
-p_e=data(4475:5475,16)./100;
-q_e=data(4475:5475,17)./100;
-r_e=data(4475:5475,18)./100;% 实际输出
-roll_d=data(4475:5475,4).*d2r/100;
-pitch_d=data(4475:5475,5).*d2r/100;
-yaw_d=data(4475:5475,6).*d2r/100;% 实际给定控制
-roll_eso=data(4475:5475,7)/100;
-pitch_eso=data(4475:5475,8)/100;
-yaw_eso=data(4475:5475,9)/100;
-p_eso=data(4475:5475,10)/100;
-q_eso=data(4475:5475,11)/100;
-r_eso=data(4475:5475,12)/100;
-dx_eso=data(4475:5475,13)/100;
-dy_eso=data(4475:5475,14)/100;
-dz_eso=data(4475:5475,15)/100;
+data=xlsread('fx4Ds.xlsx');%4292-5792
+% data=xlsread('DATAfx20fbsteptest.xlsx');%4292-5792
+roll_e=data(4292:5792,1)./100;
+pitch_e=data(4292:5792,2)./100;
+yaw_e=data(4292:5792,3)./100;
+p_e=data(4292:5792,16)./100;
+q_e=data(4292:5792,17)./100;
+r_e=data(4292:5792,18)./100;% 实际输出
+roll_d=data(4292:5792,4).*d2r/100;
+pitch_d=data(4292:5792,5).*d2r/100;
+yaw_d=data(4292:5792,6).*d2r/100;% 实际给定控制
+roll_eso=data(4292:5792,7)/100;
+pitch_eso=data(4292:5792,8)/100;
+yaw_eso=data(4292:5792,9)/100;
+p_eso=data(4292:5792,10)/100;
+q_eso=data(4292:5792,11)/100;
+r_eso=data(4292:5792,12)/100;
+dx_eso=data(4292:5792,13)/100;
+dy_eso=data(4292:5792,14)/100;
+dz_eso=data(4292:5792,15)/100;
 % time=0:0.01:28.49;
-time=0:0.01:10;
+time=0:0.01:15;
 %% 角度
-figure,
-plot(time,roll_d*r2d,'r-');hold on;
-plot(time,roll_eso,'b-');hold on;
-plot(time,roll_e,'g-');
+% figure,
+% plot(time,roll_d*r2d,'r-');hold on;
+% plot(time,roll_eso,'b-');hold on;
+plot(time,roll_e,'b-');
 grid on;
 title('滚转角','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
 legend('给定','eso','实际输出');

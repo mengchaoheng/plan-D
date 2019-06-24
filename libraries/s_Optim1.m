@@ -249,9 +249,15 @@ else
     U=e;
 end   
 y = Torque2surface3(U);
+y=D*e;
+y(1)=Constrain(y(1),-0.3491,0.3491);
+y(2)=Constrain(y(2),-0.3491,0.3491);
+y(3)=Constrain(y(3),-0.3491,0.3491);
+y(4)=Constrain(y(4),-0.3491,0.3491);
 %%
 sys(1:4) = y;
 sys(5:7) = U;
+% sys(5:7) = D_*y';
 
 
 %%
