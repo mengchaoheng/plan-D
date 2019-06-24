@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 7;
-sizes.NumInputs      = 3;
+sizes.NumInputs      = 6;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -241,19 +241,35 @@ D=[-1  0  1;
          0           -0.5000         0              0.5000;
        0.2500         0.2500         0.2500         0.2500];
 A=0.349;   
+% e = [u(1);u(2);u(3)];
+% M=crossover_point([0;0;0],e);
+% if (norm(e)>norm(M))
+%     U=M;
+% else
+%     U=e;
+% end   
+% y = Torque2surface3(U);
+
 e = [u(1);u(2);u(3)];
-M=crossover_point([0;0;0],e);
-if (norm(e)>norm(M))
-    U=M;
+d = [u(4);u(5);u(6)];
+
+M=crossover_point([0;0;0],e-d);
+if (norm(e-d)>norm(M))
+    Md=crossover_point([0;0;0],-d);
+    if (norm(-d)>norm(Md))
+        U=-d;
+    else
+        U=crossover_point(-d,e);
+    end
 else
-    U=e;
-end   
+    U=e-d;
+end
 y = Torque2surface3(U);
-y=D*e;
-y(1)=Constrain(y(1),-0.3491,0.3491);
-y(2)=Constrain(y(2),-0.3491,0.3491);
-y(3)=Constrain(y(3),-0.3491,0.3491);
-y(4)=Constrain(y(4),-0.3491,0.3491);
+% y=D*e;
+% y(1)=Constrain(y(1),-0.3491,0.3491);
+% y(2)=Constrain(y(2),-0.3491,0.3491);
+% y(3)=Constrain(y(3),-0.3491,0.3491);
+% y(4)=Constrain(y(4),-0.3491,0.3491);
 %%
 sys(1:4) = y;
 sys(5:7) = U;
