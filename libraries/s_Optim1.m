@@ -168,7 +168,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 7;
-sizes.NumInputs      = 3;
+sizes.NumInputs      = 6;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -241,8 +241,10 @@ D_=1*[-0.5000         0             0.5000         0;
          0           -0.5000         0              0.5000;
        0.2500         0.2500         0.2500         0.2500];
 A=0.349;   
+%-------------------------------------------------------------------------
 e = [u(1);u(2);u(3)];
-M=crossover_point([0;0;0],e);
+d = [u(4);u(5);u(6)];
+M=crossover_point([0;0;0],e-d);
 if (norm(e)>norm(M))
     U=M;
 else
