@@ -58,15 +58,15 @@ end
 %% Custom Variables
 % Add your variables here:
 %===========================1旧版====================================
-% controlldata = xlsread('controll');
-% rolldata=controlldata(:,1)./(100*r2d);
-% pitchdata=controlldata(:,2)./(100*r2d);
-% yawdata=controlldata(:,3)./(100*r2d);
-% hdata=controlldata(:,4)./(100);
-% cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
-% cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
-% cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
-% cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
+controlldata = xlsread('controll');
+rolldata=controlldata(:,1)./(100*r2d);
+pitchdata=controlldata(:,2)./(100*r2d);
+yawdata=controlldata(:,3)./(100*r2d);
+hdata=controlldata(:,4)./(100);
+cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
+cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
+cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
+cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 
 %===========================2新版结合 testplot.m =====================================
 % data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
@@ -79,10 +79,10 @@ end
 % cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
 % cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
 %====================================================================
-load('cmdroll.mat');
-load('cmdpitch.mat');
-load('cmdyaw.mat');
-load('cmdh.mat');
+% load('cmdroll.mat');
+% load('cmdpitch.mat');
+% load('cmdyaw.mat');
+% load('cmdh.mat');
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 
 %-------------------r_sm插值表-----------------------------------------------------------
