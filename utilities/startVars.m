@@ -59,10 +59,10 @@ end
 % Add your variables here:
 %===========================1¾É°æ====================================
 % controlldata = xlsread('controll');
-% rolldata=controlldata(1000:3000,4)./(100*r2d);
-% pitchdata=controlldata(1000:3000,5)./(100*r2d);
-% yawdata=controlldata(1000:3000,6)./(100*r2d);
-% hdata=controlldata(1000:3000,7)./(100);
+% rolldata=controlldata(:,1)./(100*r2d);
+% pitchdata=controlldata(:,2)./(100*r2d);
+% yawdata=controlldata(:,3)./(100*r2d);
+% hdata=controlldata(:,4)./(100);
 % cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
 % cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
 % cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
