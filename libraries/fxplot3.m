@@ -1,7 +1,7 @@
-% Ds no turb fb
+
 d2r=pi/180;
 r2d=180/pi;
-data=xlsread('DATAfx28Dfbturbtest.xlsx');%5158-6158
+% data=xlsread('DATAfx28Dfbturbtest.xlsx');%5158-6158
 data=xlsread('DATAfx21Dnofbsteptest.xlsx');%5158-6158
 roll_e=data(5158:6158,1)./100;
 pitch_e=data(5158:6158,2)./100;

@@ -2,7 +2,7 @@
 d2r=pi/180;
 r2d=180/pi;
 % data=xlsread('DATAfx26Dsnofbturbtest.xlsx');%1-77270
-data=xlsread('fx5D.xlsx');%1-77270
+% data=xlsread('fx5D.xlsx');%1-77270
 % data=xlsread('DATAfx19nofbsteptest.xlsx');%1-77270
 roll_e=data(3978:4977,1)./100;
 pitch_e=data(3978:4977,2)./100;

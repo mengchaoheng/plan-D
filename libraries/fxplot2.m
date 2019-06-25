@@ -1,8 +1,8 @@
 
 d2r=pi/180;
 r2d=180/pi;
-data=xlsread('fx4Ds.xlsx');%4292-5792
-% data=xlsread('DATAfx20fbsteptest.xlsx');%4292-5792
+% data=xlsread('fx4Ds.xlsx');%4292-5792
+data=xlsread('DATAfx20fbsteptest.xlsx');%4475-5792
 roll_e=data(4292:5792,1)./100;
 pitch_e=data(4292:5792,2)./100;
 yaw_e=data(4292:5792,3)./100;
