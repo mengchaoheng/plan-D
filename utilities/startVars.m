@@ -50,9 +50,9 @@ end
 if(VSS_COMMAND ==2)
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 -1.04];
+initPosNED = [0 0 -1.1];
 initVb = [0 0 0];
-initEuler = [0.035779249665884 -0.005061454830784 -1.636769772520282];
+initEuler = [0.000698131700797732 -0.00418879020478639 1.55247036964896];
 initAngRates = [0 0 0];
 end
 %% Custom Variables

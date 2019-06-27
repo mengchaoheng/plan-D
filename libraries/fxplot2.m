@@ -1,36 +1,42 @@
-
+% 7.5 7.5 5.5
 d2r=pi/180;
 r2d=180/pi;
-% data=xlsread('fx4Ds.xlsx');%4292-5792
-data=xlsread('DATAfx20fbsteptest.xlsx');%4475-5792
-roll_e=data(4292:5792,1)./100;
-pitch_e=data(4292:5792,2)./100;
-yaw_e=data(4292:5792,3)./100;
-p_e=data(4292:5792,16)./100;
-q_e=data(4292:5792,17)./100;
-r_e=data(4292:5792,18)./100;% 实际输出
-roll_d=data(4292:5792,4).*d2r/100;
-pitch_d=data(4292:5792,5).*d2r/100;
-yaw_d=data(4292:5792,6).*d2r/100;% 实际给定控制
-roll_eso=data(4292:5792,7)/100;
-pitch_eso=data(4292:5792,8)/100;
-yaw_eso=data(4292:5792,9)/100;
-p_eso=data(4292:5792,10)/100;
-q_eso=data(4292:5792,11)/100;
-r_eso=data(4292:5792,12)/100;
-dx_eso=data(4292:5792,13)/100;
-dy_eso=data(4292:5792,14)/100;
-dz_eso=data(4292:5792,15)/100;
+% data=xlsread('fx4Ds.xlsx');%3643-4143
+data=xlsread('DATAstepDD1.xlsx');%3643-4143
+roll_e=data(4479:4979,1)./100;
+pitch_e=data(3643:4143,2)./100;
+yaw_e=data(3643:4143,3)./100;
+p_e=data(3643:4143,16)./100;
+q_e=data(3643:4143,17)./100;
+r_e=data(3643:4143,18)./100;% 实际输出
+roll_d=data(4479:4979,4).*d2r/100;
+pitch_d=data(3643:4143,5).*d2r/100;
+yaw_d=data(3643:4143,6).*d2r/100;% 实际给定控制
+roll_eso=data(3643:4143,7)/100;
+pitch_eso=data(3643:4143,8)/100;
+yaw_eso=data(3643:4143,9)/100;
+p_eso=data(3643:4143,10)/100;
+q_eso=data(3643:4143,11)/100;
+r_eso=data(3643:4143,12)/100;
+dx_eso=data(3643:4143,13)/100;
+dy_eso=data(3643:4143,14)/100;
+dz_eso=data(3643:4143,15)/100;
 % time=0:0.01:28.49;
-time=0:0.01:15;
+time=0:0.01:5;
+% data=xlsread('DATAstepd1.xlsx');%3643-4143
+data=xlsread('DATAstepd7.xlsx');%3643-4143
+roll_e1=data(3533:4033,1)./100;
+roll_d1=data(3533:4033,4).*d2r/100;
 %% 角度
 % figure,
-% plot(time,roll_d*r2d,'r-');hold on;
+plot(time,roll_d*r2d,'r-');hold on;
 % plot(time,roll_eso,'b-');hold on;
-plot(time,roll_e,'b-');
+plot(time,roll_e+0.6,'b-');hold on;
+plot(time,roll_d1*r2d,'k-');hold on;
+plot(time,roll_e1+0.3,'g-');
 grid on;
 title('滚转角','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
-legend('给定','eso','实际输出');
+legend('给定','D实际输出','给定','fbDs');
 % figure,%% 
 % plot(time,pitch_d*r2d,'r-');hold on;
 % plot(time,pitch_eso,'b-');hold on;
@@ -46,11 +52,11 @@ legend('给定','eso','实际输出');
 % legend('给定','eso','实际输出');
 %% 角速度
 %-----------------------------------------------------------------------------------------
-figure,%% 
-plot(time,p_eso,'b-');hold on;
-plot(time,p_e,'g-');grid on;
-title('p','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
-legend('eso','实际输出');
+% figure,%% 
+% plot(time,p_eso,'b-');hold on;
+% plot(time,p_e,'g-');grid on;
+% title('p','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
+% legend('eso','实际输出');
 % figure,%% 
 % plot(time,q_eso,'b-');hold on;
 % plot(time,q_e,'g-');grid on;
@@ -63,10 +69,10 @@ legend('eso','实际输出');
 % legend('eso','实际输出');
 
 %% 扰动估计
-figure,
-plot(time,dx_eso*0.0298,'r-');hold on;
-title('dx','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
-% 
+% figure,
+% plot(time,dx_eso*0.0298,'r-');hold on;
+% title('dx','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
+% % 
 % figure,%% 
 % plot(time,dy_eso*0.0298 ,'r-');hold on;
 % title('dy','FontWeight','bold');xlabel('t (s)','FontWeight','bold');ylabel('\phi (\circ)','FontWeight','bold')
