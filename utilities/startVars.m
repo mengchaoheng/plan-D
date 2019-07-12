@@ -11,7 +11,7 @@
 initVars = who;
 % Variants Conditions
 asbVariantDefinition;
-VSS_COMMAND = 2;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
+VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
@@ -36,8 +36,34 @@ d2r=pi/180;
 r2d=180/pi;
 
 
+%% Custom Variables
+% Add your variables here:
+%===========================1旧版====================================
+% controlldata = xlsread('controll');
+% rolldata=controlldata(:,1)./(100*r2d)*0.7;
+% pitchdata=controlldata(:,2)./(100*r2d)*0.7;
+% yawdata=controlldata(:,3)./(100*r2d)*0.7;
+% hdata=controlldata(:,4)./(100);
+% cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
+% cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
+% cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
+% cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 
-
+%===========================2新版结合 testplot.m =====================================
+data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
+roll_d=data(10000:15000,4).*d2r/100;
+pitch_d=data(10000:15000,5).*d2r/100;
+yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
+h_e=data(6000:9000,19)/100;% 观测输出高度
+cmdroll = timeseries(roll_d,0:Ts:Ts*(length(roll_d)-1));
+cmdpitch = timeseries(pitch_d,0:Ts:Ts*(length(pitch_d)-1));
+cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
+cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
+%====================================================================
+% load('cmdroll.mat');
+% load('cmdpitch.mat');
+% load('cmdyaw.mat');
+% load('cmdh.mat');
 if(VSS_COMMAND == 0)
 % % Initial contitions
 initDate = [2019 5 1 0 0 0];
@@ -50,39 +76,12 @@ end
 if(VSS_COMMAND ==2)
 initDate = [2019 5 1 0 0 0];
 initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 -1.1];
+initPosNED = [0 0 cmdh.Data(1)];
 initVb = [0 0 0];
-initEuler = [0.000698131700797732 -0.00418879020478639 1.55247036964896];
+initEuler = [cmdroll.Data(1) cmdpitch.Data(1) cmdyaw.Data(1)];
 initAngRates = [0 0 0];
 end
-%% Custom Variables
-% Add your variables here:
-%===========================1旧版====================================
-controlldata = xlsread('controll');
-rolldata=controlldata(:,1)./(100*r2d)*0.7;
-pitchdata=controlldata(:,2)./(100*r2d)*0.7;
-yawdata=controlldata(:,3)./(100*r2d)*0.7;
-hdata=controlldata(:,4)./(100);
-cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
-cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
-cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
-cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 
-%===========================2新版结合 testplot.m =====================================
-% data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
-% roll_d=data(10000:15000,4).*d2r/100;
-% pitch_d=data(10000:15000,5).*d2r/100;
-% yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
-% h_e=data(6000:9000,19)/100;% 观测输出高度
-% cmdroll = timeseries(roll_d,0:Ts:Ts*(length(roll_d)-1));
-% cmdpitch = timeseries(pitch_d,0:Ts:Ts*(length(pitch_d)-1));
-% cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
-% cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
-%====================================================================
-% load('cmdroll.mat');
-% load('cmdpitch.mat');
-% load('cmdyaw.mat');
-% load('cmdh.mat');
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 
 %-------------------r_sm插值表-----------------------------------------------------------
