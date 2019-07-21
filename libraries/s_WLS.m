@@ -1,4 +1,4 @@
-function [sys,x0,str,ts,simStateCompliance] = s_Optim1(t,x,u,flag)
+function [sys,x0,str,ts,simStateCompliance] = s_WLS(t,x,u,flag)
 %SFUNTMPL General MATLAB S-Function Template
 %   With MATLAB S-functions, you can define you own ordinary differential
 %   equations (ODEs), discrete system equations, and/or just about
@@ -167,8 +167,8 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 4;
-sizes.NumInputs      = 3;
+sizes.NumOutputs     = 5;
+sizes.NumInputs      = 7;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -231,52 +231,138 @@ sys = [];
 %
 function sys=mdlOutputs(t,x,u)
 
-%% 
-D=[-1  0  1;
-    0 -1  1;
-    1  0  1;
-    0  1  1];
-% D
-D_=1*[-0.5000         0             0.5000         0;
-         0           -0.5000         0              0.5000;
-       0.2500         0.2500         0.2500         0.2500];
-A=0.349;   
-%-------------------------------------------------------------------------
-e = [u(1);u(2);u(3)];
-% d = [u(4);u(5);u(6)];
-% M=crossover_point([0;0;0],e-d);
-% if (norm(e-d)>norm(M))
-%     U=M;
+v=[u(1);u(2);u(3)];
+% M=crossover_point([0;0;0],e);
+% if (norm(e)>norm(M))
+%     v=M;
 % else
-%     U=e-d;
-% end   
-% y = Torque2surface3(U);
-%-------------------------------------------------------------------------
-% e = [u(1);u(2);u(3)];
-% d = [u(4);u(5);u(6)];
-% M=crossover_point([0;0;0],e-d);
-% if (norm(e-d)>norm(M))
-%     Md=crossover_point([0;0;0],-d);
-%     if (norm(-d)>norm(Md))
-%         U=-d;
-%     else
-%         U=crossover_point(-d,e);
-%     end
-% else
-%     U=e-d;
-% end
-% y = Torque2surface3(U);
-%-------------------------------------------------------------------------
+%     v=e;
+% end 
+u_last=[u(4);u(5);u(6);u(7)];
+uu=u_last;
+%============================
+B=[-0.5   0       0.5   0;
+    0  -0.5    0       0.5;
+    0.25   0.25   0.25   0.25];
 
-y=D*e;
-% y(1)=Constrain(y(1),-0.3491,0.3491);
-% y(2)=Constrain(y(2),-0.3491,0.3491);
-% y(3)=Constrain(y(3),-0.3491,0.3491);
-% y(4)=Constrain(y(4),-0.3491,0.3491);
-%%
-sys(1:4) = y;
-% sys(5:7) = U;
-% sys(5:7) = D_*y';
+% umin=[1;1;1;1]*(-20)*pi/180;
+% umax=[1;1;1;1]*20*pi/180;
+umin=max([1;1;1;1]*(-20)*pi/180,-4*pi/180+u_last);
+umax=min([1;1;1;1]*20*pi/180,4*pi/180+u_last);
+%========有效集的重新初始化============
+W=zeros(4,1);
+infeasible1 = (u_last < umin);
+W(infeasible1)=-1;
+infeasible2 = (u_last > umax);
+W(infeasible2)= 1;
+%=======================================
+
+ud=[0;0;0;0];
+% Number of variables.
+m = 4;
+%================================
+% 加权系数
+gam=1e6;
+% 加权矩阵
+Wv=eye(3);
+Wu=eye(4);
+% 迭代次数上限
+imax=100;
+% Set default values of optional arguments.
+gam_sq = sqrt(gam);
+A = [gam_sq*Wv*B ; Wu];
+b = [gam_sq*Wv*v ; Wu*ud];
+
+% Initial residual.
+d = b - A*uu;
+% Determine indeces of free variables.
+i_free = W==0;
+
+% Iterate until optimum is found or maximum number of iterations
+% is reached.
+
+for iter = 1:imax
+    % ----------------------------------------
+    %  Compute optimal perturbation vector p.
+    % ----------------------------------------
+    % Eliminate saturated variables.
+    A_free = A(:,i_free);
+    % Solve the reduced optimization problem for free variables.
+    p_free = A_free\d;
+    % Zero all perturbations corresponding to active constraints.
+    p = zeros(m,1);
+    % Insert perturbations from p_free into free the variables.
+    p(i_free) = p_free;
+    
+    % ----------------------------
+    %  Is the new point feasible?
+    % ----------------------------
+    
+    u_opt = uu + p;
+    infeasible = (u_opt < umin) | (u_opt > umax);
+    
+    if ~any(infeasible(i_free))
+        
+        % ----------------------------
+        %  Yes, check for optimality.
+        % ----------------------------
+        
+        % Update point and residual.
+        uu = u_opt;
+        d = d - A_free*p_free;
+        if norm(p)<=eps
+        % Compute Lagrangian multipliers.
+        lambda = W.*(A'*d);
+        % Are all lambda non-negative?
+        if lambda >= -eps
+            % / ------------------------ \
+            % | Optimum found, bail out. |
+            % \ ------------------------ /
+            return;
+        end
+        
+        % --------------------------------------------------
+        %  Optimum not found, remove one active constraint.
+        % --------------------------------------------------
+        
+        % Remove constraint with most negative lambda from the
+        % working set.
+        [~,i_neg] = min(lambda);
+        W(i_neg) = 0;
+        i_free(i_neg) = 1;
+        end
+    else
+        
+        % ---------------------------------------
+        %  No, find primary bounding constraint.
+        % ---------------------------------------
+        
+        % Compute distances to the different boundaries. Since alpha < 1 is
+        % the maximum step length, initiate with ones.
+        dist = ones(m,1);
+        i_min = i_free & p<0;
+        i_max = i_free & p>0;
+        dist(i_min) = (umin(i_min) - uu(i_min)) ./ p(i_min);
+        dist(i_max) = (umax(i_max) - uu(i_max)) ./ p(i_max);
+        
+        % Proportion of p to travel
+        [alpha,i_alpha] = min(dist);
+        % Update point and residual.
+        uu = uu + alpha*p;
+        % Update point and residual.
+        d = d - A_free*alpha*p_free;
+        
+        % Add corresponding constraint to working set.
+        W(i_alpha) = sign(p(i_alpha));
+        i_free(i_alpha) = 0;
+        
+    end
+    
+end
+
+
+sys(1:4) = uu;
+sys(5) = iter;
 
 
 %%

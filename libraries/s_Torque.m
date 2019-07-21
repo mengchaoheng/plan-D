@@ -167,7 +167,7 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 6;
+sizes.NumOutputs     = 7;
 sizes.NumInputs      = 17;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
@@ -387,14 +387,14 @@ M_gyro=I_prop*speed*[-q;p;0];%мсбща╕╬ь
 epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
-M=M_prop+M_cs+M_ds+M_aero+M_gyro+d;
+M=M_prop+M_cs+M_ds+M_aero*0+M_gyro+d;
 
 sys(1:3) = M;
 kk=[-0.56   0        0.56    0;
           0  -0.56    0        0.56;
      0.218   0.218   0.218    0.218];  
-% sys(4:7) = (V_c+V_i)^2*[k_cs1;k_cs2;k_cs3;k_cs4];
-sys(4:6)=I\(M-cross([p;q;r],I*[p;q;r])-kk*c);
+sys(4:7) = (V_c+V_i)^2*[k_cs1;k_cs2;k_cs3;k_cs4];
+% sys(4:6)=I\(M-cross([p;q;r],I*[p;q;r])-kk*c);
 % 
 
 

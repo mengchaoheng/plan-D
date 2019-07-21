@@ -30,7 +30,8 @@ data=xlsread('DATAstepds3.xlsx');%3643-4143
 yaw_eds3=data(8334:8834,3)./100;
 yaw_dds3=data(8334:8834,6).*d2r/100;
 
-figure,
+% figure,
+subplot(2,1,2);
 plot(time,yaw_dds1,'k-');hold on;
 plot(time,(yaw_eds3-60.58-1.35)*1.02-0.08,'r--');
 plot(time,(yaw_eds1-62.17)*1.02,'b-.');hold on;

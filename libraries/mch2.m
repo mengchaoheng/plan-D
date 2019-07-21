@@ -14,6 +14,7 @@ roll_dDD=data(4479:4979,4).*d2r/100;
 %% ½Ç¶È
 time=0:0.01:5;
 figure,
+subplot(2,1,1);
 % plot(time,roll_dd*r2d,'r-');hold on;
 % plot(time,roll_ed+0.2,'b*-');hold on;
 
