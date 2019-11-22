@@ -354,7 +354,7 @@ F_cs=K_cs*(c+[-c_b;c_b;c_b;-c_b]);%舵面气动力
     F_m=[-MomentumForce(den,S,(u_-D_x),(V_c+V_i),alpha,r_m_X,r_m_Y);
          -MomentumForce(den,S,(v-D_y),(V_c+V_i),alpha,r_m_X,r_m_Y);
                                      0                             ]; 
-    [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
+%     [F_as,F_ac]=AeroShapeForce(Amplitude,Coupling,alpha,k_as_X,k_as_Y,k_ac_X,k_ac_Y,k_ra_X,k_ra_Y);
     F_p=[F_as*cos(beta);
          F_as*sin(beta);
          -F_ac          ];      
