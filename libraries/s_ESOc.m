@@ -228,8 +228,8 @@ D_=1*[-0.5000         0              0.5000         0;
          0           -0.5000         0              0.5000;
        0.2500         0.2500         0.2500         0.2500];
 % pinv(D)
-kc1=2.7;% 2.8
-kc2=3.3;% 3.3
+kc1=3.157;% 2.8
+kc2=3.157;% 3.3
 l_1=0.17078793;
 l_2=0.06647954;
 K=1*[-kc1*l_1    0        kc1*l_1     0;
@@ -249,25 +249,25 @@ U=I\(K*u(4:7));% 等价于 U = = I\(K_eye*D_*u(4:7)); K_eye*D_=K; K_eye = K_eye*D_*
 h=0.01;
 epc0=x(1:3)-y;
 %======================================中科大版=======================================
-a_i=0.8;% 0.5-1之间
-ee=0.05;
-r=-epc0./ee^2;
-a=1;b=1;c=1;
-% K1=3*b;K2=3*b^2;K3=b^3;
-K1=a+b+c;K2=a*b+a*c+b*c;K3=a*b*c;
-eig([-K1 1 0;-K2 0 1;-K3 0 0])
-K1=diag([K1 K1 1.5*K1]);
-K2=diag([K2 K2 1.5^2*K2]);
-K3=diag([K3 K3 1.5^3*K3]);
-
-sys(1:3)=x(1:3)+h*(x(4:6)+K1*ee*[nonlinear_eso(a_i,1,r(1));nonlinear_eso(a_i,1,r(2));nonlinear_eso(a_i,1,r(3))]);
-sys(4:6)=x(4:6)+h*(x(7:9)+K2*[nonlinear_eso(a_i,2,r(1));nonlinear_eso(a_i,2,r(2));nonlinear_eso(a_i,2,r(3))] + U);
-sys(7:9)=x(7:9)+h*(K3/ee)*[nonlinear_eso(a_i,3,r(1));nonlinear_eso(a_i,3,r(2));nonlinear_eso(a_i,3,r(3))];
+% a_i=0.8;% 0.5-1之间
+% ee=0.05;
+% r=-epc0./ee^2;
+% a=1;b=1;c=1;
+% % K1=3*b;K2=3*b^2;K3=b^3;
+% K1=a+b+c;K2=a*b+a*c+b*c;K3=a*b*c;
+% eig([-K1 1 0;-K2 0 1;-K3 0 0])
+% K1=diag([K1 K1 1.5*K1]);
+% K2=diag([K2 K2 1.5^2*K2]);
+% K3=diag([K3 K3 1.5^3*K3]);
+% 
+% sys(1:3)=x(1:3)+h*(x(4:6)+K1*ee*[nonlinear_eso(a_i,1,r(1));nonlinear_eso(a_i,1,r(2));nonlinear_eso(a_i,1,r(3))]);
+% sys(4:6)=x(4:6)+h*(x(7:9)+K2*[nonlinear_eso(a_i,2,r(1));nonlinear_eso(a_i,2,r(2));nonlinear_eso(a_i,2,r(3))] + U);
+% sys(7:9)=x(7:9)+h*(K3/ee)*[nonlinear_eso(a_i,3,r(1));nonlinear_eso(a_i,3,r(2));nonlinear_eso(a_i,3,r(3))];
 %======================================================================================================
 % =====================================韩京清版===============================================
-% beta1=diag([100 100 100]);beta2=diag([700 700 700]);beta3=diag([3500 3500 3500]);
-% delta=0.1;
-% alfa1=0.5;alfa2=0.25;
+beta1=diag([100 100 100]);beta2=diag([700 700 700]);beta3=diag([3500 3500 3500]);
+delta=0.1;
+alfa1=0.5;alfa2=0.25;
 % epc0=x(1:3)-y;
 % 关于自抗扰技术的ESO
 % 假设某个变量x的微分方程可以表示为
@@ -303,9 +303,9 @@ sys(7:9)=x(7:9)+h*(K3/ee)*[nonlinear_eso(a_i,3,r(1));nonlinear_eso(a_i,3,r(2));n
 % 注意对应关系，x是当前时刻k的值且是向量x(1)对应z1(k),x(2)对应z2(k),x(3)对应z3(k)
 % sys是下一时刻k+1的值，sys(1)对应z1(k+1),sys(2)对应z2(k+1),sys(3)对应z3(k+1)
 % 另外还有特别特别注意u在系统中代表的量，是升力T还是升力加速度a_t还是NED下加速度a，对应的ADRC结构都不相同
-% sys(1:3)=x(1:3)+h*(x(4:6)-beta1*epc0);
-% sys(4:6)=x(4:6)+h*(x(7:9)-beta2*[fal(epc0(1),alfa1,delta);fal(epc0(2),alfa1,delta);fal(epc0(3),alfa1,delta)]+U); % 此处u的量纲是力矩/转动惯量，即角加速度，估计的扰动也是角加速度，需乘以转动惯量得力矩
-% sys(7:9)=x(7:9)-h*beta3*[fal(epc0(1),alfa2,delta);fal(epc0(2),alfa2,delta);fal(epc0(3),alfa2,delta)];
+sys(1:3)=x(1:3)+h*(x(4:6)-beta1*epc0);
+sys(4:6)=x(4:6)+h*(x(7:9)-beta2*[fal(epc0(1),alfa1,delta);fal(epc0(2),alfa1,delta);fal(epc0(3),alfa1,delta)]+U); % 此处u的量纲是力矩/转动惯量，即角加速度，估计的扰动也是角加速度，需乘以转动惯量得力矩
+sys(7:9)=x(7:9)-h*beta3*[fal(epc0(1),alfa2,delta);fal(epc0(2),alfa2,delta);fal(epc0(3),alfa2,delta)];
 % end mdlUpdate
 
 %
@@ -325,8 +325,8 @@ D_=1*[-0.5000         0              0.5000         0;
          0           -0.5000         0              0.5000;
        0.2500         0.2500         0.2500         0.2500];
 % pinv(D)
-kc1=2.7;% 2.8
-kc2=3.3;% 3.3
+kc1=3.157;% 2.8
+kc2=3.157;% 3.3
 l_1=0.17078793;
 l_2=0.06647954;
 K=1*[-kc1*l_1    0        kc1*l_1     0;
