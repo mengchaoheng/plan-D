@@ -169,7 +169,7 @@ sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 2;
 sizes.NumOutputs     = 2;
 sizes.NumInputs      = 1;
-sizes.DirFeedthrough = 1;
+sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
 sys = simsizes(sizes);
@@ -188,8 +188,8 @@ str = [];
 % initialize the array of sample times
 %
 T=0.01;
-h=5*T;
-ts  = [h 0];
+% h=1*T;
+ts  = [0.01 0];
 
 % Specify the block simStateCompliance. The allowed values are:
 %    'UnknownSimState', < The default setting; warn and assume DefaultSimState
@@ -222,9 +222,12 @@ sys = [];
 function sys=mdlUpdate(t,x,u)
 T=0.01;
 h=5*T;
-delta=4*0.7/0.3;
-sys(1)=x(1)+h*x(2);                %Transient position signal
-sys(2)=x(2)+h*fhan(x(1)-u,x(2),delta,h);  %Transient speed signal
+% delta=4*0.7/0.3;
+T_0=0.1;
+delta=4*0.345/(T_0*T_0);
+sys(1)=x(1)+T*x(2);                %Transient position signal
+sys(2)=x(2)+T*fhan(x(1)-u,x(2),delta,h);  %Transient speed signal
+
 
 
 % end mdlUpdate
@@ -238,6 +241,7 @@ sys(2)=x(2)+h*fhan(x(1)-u,x(2),delta,h);  %Transient speed signal
 function sys=mdlOutputs(t,x,u)
 
 sys = [x(1);x(2)];
+
 
 % end mdlOutputs
 
