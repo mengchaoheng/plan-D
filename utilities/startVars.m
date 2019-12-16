@@ -50,20 +50,20 @@ r2d=180/pi;
 % cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 
 %===========================2新版结合 testplot.m =====================================
-data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
-roll_d=data(10000:15000,4).*d2r/100;
-pitch_d=data(10000:15000,5).*d2r/100;
-yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
-h_e=data(6000:9000,19)/100;% 观测输出高度
-cmdroll = timeseries(roll_d,0:Ts:Ts*(length(roll_d)-1));
-cmdpitch = timeseries(pitch_d,0:Ts:Ts*(length(pitch_d)-1));
-cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
-cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
+% data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
+% roll_d=data(10000:15000,4).*d2r/100;
+% pitch_d=data(10000:15000,5).*d2r/100;
+% yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
+% h_e=data(6000:9000,19)/100;% 观测输出高度
+% cmdroll = timeseries(roll_d,0:Ts:Ts*(length(roll_d)-1));
+% cmdpitch = timeseries(pitch_d,0:Ts:Ts*(length(pitch_d)-1));
+% cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
+% cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
 %====================================================================
-% load('cmdroll.mat');
-% load('cmdpitch.mat');
-% load('cmdyaw.mat');
-% load('cmdh.mat');
+load('cmdroll.mat');
+load('cmdpitch.mat');
+load('cmdyaw.mat');
+load('cmdh.mat');
 if(VSS_COMMAND == 0)
 % % Initial contitions
 initDate = [2019 5 1 0 0 0];
