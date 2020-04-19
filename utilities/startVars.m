@@ -13,7 +13,7 @@ initVars = who;
 asbVariantDefinition;
 allocatiom_method=0;   % 0: inv, 1: dir, 2: pro, 3: qp
 controller=1;          % 0: ADRC, 1: ADRC1, 2: PID...
-VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
+VSS_COMMAND = 3;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
@@ -66,31 +66,30 @@ load('cmdroll.mat');
 load('cmdpitch.mat');
 load('cmdyaw.mat');
 load('cmdh.mat');
-if(VSS_COMMAND == 0)
-% % Initial contitions
-initDate = [2019 5 1 0 0 0];
-initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 0];
-initVb = [0 0 0];
-initEuler = [0 0 0];
-initAngRates = [0 0 0];
-end
+
 if(VSS_COMMAND ==2)
-initDate = [2019 5 1 0 0 0];
-initPosLLA = [113.353891 23.159235 30];
-initPosNED = [0 0 cmdh.Data(1)];
-initVb = [0 0 0];
-initEuler = [cmdroll.Data(1) cmdpitch.Data(1) cmdyaw.Data(1)];
-initAngRates = [0 0 0];
+    initDate = [2019 5 1 0 0 0];
+    initPosLLA = [113.353891 23.159235 30];
+    initPosNED = [0 0 cmdh.Data(1)];
+    initVb = [0 0 0];
+    initEuler = [cmdroll.Data(1) cmdpitch.Data(1) cmdyaw.Data(1)];
+    initAngRates = [0 0 0];
+else
+    % % Initial contitions
+    initDate = [2019 5 1 0 0 0];
+    initPosLLA = [113.353891 23.159235 30];
+    initPosNED = [0 0 0];
+    initVb = [0 0 0];
+    initEuler = [0 0 0];
+    initAngRates = [0 0 0];
 end
 
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 addpath C:\Open\plan-D\qcat1_2_1\QCAT\qcat
 % function callqpact
-global B umin umax p_limits k_u sw_turb
-sw_turb=1;
-p_limits=12;
-k_u=1;
+global B umin umax p_limits sw_turb end_time
+sw_turb=0;
+p_limits=20;
 umin=[1;1;1;1]*(-p_limits)*pi/180;
 umax=[1;1;1;1]*p_limits*pi/180;
 kc1=3.157;% 2.8
@@ -100,6 +99,7 @@ l_2=0.06647954;
 B=1*[-kc1*l_1    0        kc1*l_1     0;
       0      -kc1*l_1     0        kc1*l_1;
       kc2*l_2   kc2*l_2    kc2*l_2    kc2*l_2];
+end_time=16;% sec
 %-------------------r_sm≤Â÷µ±Ì-----------------------------------------------------------
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);
