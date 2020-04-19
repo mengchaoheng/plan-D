@@ -85,7 +85,7 @@ else
 end
 
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
-addpath C:\Open\plan-D\qcat1_2_1\QCAT\qcat
+
 % function callqpact
 global B umin umax p_limits sw_turb end_time
 sw_turb=0;
