@@ -233,7 +233,7 @@ function sys=mdlOutputs(t,x,u)
 v_C=[u(1);u(2);u(3)];
 v_D=-[u(4);u(5);u(6)];% »≈∂Ø
 last_u=[u(7);u(8);u(9);u(10)];   
-uu=two_dir_alloc_mch(v_D, v_C,last_u,15,1);% 
+uu=two_dir_alloc_mch(v_D, v_C,last_u,11,0);% 
 sys = uu;
 
 % end mdlOutputs

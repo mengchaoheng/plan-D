@@ -11,11 +11,13 @@
 initVars = who;
 % Variants Conditions
 asbVariantDefinition;
-VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: Pre-saved data in a Spreadsheet
+allocatiom_method=0;   % 0: inv, 1: dir, 2: pro, 3: qp
+controller=1;          % 0: ADRC, 1: ADRC1, 2: PID...
+VSS_COMMAND = 0;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
-VSS_VISUALIZATION = 0; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
+VSS_VISUALIZATION = 1; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
 VSS_ACTUATORS = 0;     % 0: Feedthrough, 1: Linear Second Order, 2: Noninear Second Order
 
 % Bus definitions 
@@ -83,7 +85,21 @@ initAngRates = [0 0 0];
 end
 
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
-
+addpath C:\Open\plan-D\qcat1_2_1\QCAT\qcat
+% function callqpact
+global B umin umax p_limits k_u sw_turb
+sw_turb=1;
+p_limits=12;
+k_u=1;
+umin=[1;1;1;1]*(-p_limits)*pi/180;
+umax=[1;1;1;1]*p_limits*pi/180;
+kc1=3.157;% 2.8
+kc2=3.157;% 3.3
+l_1=0.17078793;
+l_2=0.06647954;
+B=1*[-kc1*l_1    0        kc1*l_1     0;
+      0      -kc1*l_1     0        kc1*l_1;
+      kc2*l_2   kc2*l_2    kc2*l_2    kc2*l_2];
 %-------------------r_sm≤Â÷µ±Ì-----------------------------------------------------------
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);

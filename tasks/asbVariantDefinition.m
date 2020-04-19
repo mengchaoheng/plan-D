@@ -2,12 +2,22 @@
 % This script initializes the variant objects for the quadcopter model.
 
 % Copyright 2017 The MathWorks, Inc.
-
+% allocation
+inv = Simulink.Variant('allocatiom_method==0');
+dir = Simulink.Variant('allocatiom_method==1');
+pro = Simulink.Variant('allocatiom_method==2');
+qp = Simulink.Variant('allocatiom_method==3');
+% controller
+PID = Simulink.Variant('controller==0');
+PID_allocator = Simulink.Variant('controller==1');
+PID_allocator1 = Simulink.Variant('controller==2');
+ADRC_allocator = Simulink.Variant('controller==3');
+ADRC_allocator1 = Simulink.Variant('controller==4');
 % Command
 VSS_COMMAND_SIGBLDR = Simulink.Variant('VSS_COMMAND==0');
 VSS_COMMAND_JOYSTICK = Simulink.Variant('VSS_COMMAND==1');
 VSS_COMMAND_PRESAVED = Simulink.Variant('VSS_COMMAND==2');
-
+VSS_COMMAND_user = Simulink.Variant('VSS_COMMAND==3');
 % Sensors
 VSS_SENSORS_FEEDTHROUGH = Simulink.Variant('VSS_SENSORS==0');
 VSS_SENSORS_DYNAMICS = Simulink.Variant('VSS_SENSORS==1');
