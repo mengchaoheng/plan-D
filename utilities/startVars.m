@@ -77,8 +77,8 @@ if(VSS_COMMAND ==2)
 else
     % % Initial contitions
     initDate = [2019 5 1 0 0 0];
-    initPosLLA = [113.353891 23.159235 30];
-    initPosNED = [0 0 0];
+    initPosLLA = [23.159235 113.353891 30];% 纬度，经度，高度
+    initPosNED = [0 0 -30];
     initVb = [0 0 0];
     initEuler = [0 0 0];
     initAngRates = [0 0 0];
