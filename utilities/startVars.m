@@ -14,11 +14,11 @@ asbVariantDefinition;
 allocatiom_method=0;   % 0: inv, 1: dir, 2: pro, 3: qp
 controller=0;          % 0: ADRC, 1: PID...
 VSS_COMMAND = 3;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
-VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
-VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
-VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
+% VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
+% VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
+% VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
 VSS_VISUALIZATION = 0; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
-VSS_ACTUATORS = 0;     % 0: Feedthrough, 1: Linear Second Order, 2: Noninear Second Order
+% VSS_ACTUATORS = 0;     % 0: Feedthrough, 1: Linear Second Order, 2: Noninear Second Order
 
 % Bus definitions 
 asbBusDefinitionCommand; 

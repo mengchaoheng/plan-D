@@ -187,7 +187,7 @@ str = [];
 %
 % initialize the array of sample times
 %
-ts  = [0 0];
+ts  = [0.005 0];
 
 % Specify the block simStateCompliance. The allowed values are:
 %    'UnknownSimState', < The default setting; warn and assume DefaultSimState
@@ -232,7 +232,7 @@ sys = [];
 function sys=mdlOutputs(t,x,u)
 
 %----------------------基本参数---------------------------------------------------
-global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
+global B r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 k_TS=9.9796018325697625989171178675552e-6;
 k_TV=-2.8620408163265306122448979591837e-4;
 d_MS=1.1334291042e-7;
@@ -379,14 +379,16 @@ F_z=F_m(2);
 %------------面对舵机力臂，逆时针转为正----------------------------
 M_prop=[0;0;d_MS*speed^2];%风扇扭矩+
 %======================================================
-% D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       k_cs3*l_1         0;
-%                     0           -k_cs2*l_1       0         k_cs4*l_1;
-%                   k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];   
-kc1=3.157;% 2.8
-kc2=3.157;% 3.3
-D_cs=1*[-kc1*l_1    0        kc1*l_1     0;
-      0      -kc1*l_1     0        kc1*l_1;
-      kc2*l_2   kc2*l_2    kc2*l_2    kc2*l_2];
+D_cs=(V_c+V_i)^2*[-k_cs1*l_1          0       k_cs3*l_1         0;
+                    0           -k_cs2*l_1       0         k_cs4*l_1;
+                  k_cs1*l_2      k_cs2*l_2    k_cs3*l_2    k_cs4*l_2];   
+
+% kc1=3.157;% 2.8
+% kc2=3.157;% 3.3
+% D_cs=1*[-kc1*l_1    0        kc1*l_1     0;
+%       0      -kc1*l_1     0        kc1*l_1;
+%       kc2*l_2   kc2*l_2    kc2*l_2    kc2*l_2];
+B=D_cs;
 M_cs=D_cs*c;%舵面力矩
 %===============================================
 M_ds=[0;0;(V_c+V_i)*speed*d_ds];%涵道平衡扭矩-
@@ -396,8 +398,8 @@ M_gyro=I_prop*speed*[-q;p;0];%陀螺力矩
 epsilon_m=interp1(e_m_X,e_m_Y,alpha);
 epsilon_p=interp1(e_p_X,e_p_Y,alpha);
 M_aero= cross(F_p,[0;0;epsilon_p])+cross(F_m,[0;0;epsilon_m]);
-% M=M_prop+M_cs+M_ds+M_aero*1+M_gyro+d;
-M=M_prop+M_cs+M_ds+M_gyro;
+M=M_prop+M_cs+M_ds+M_aero*0.23143+M_gyro+d;
+% M=M_prop+M_cs+M_ds+M_gyro;
 sys(1:3) = M;
 % kk=[-0.56   0        0.56    0;
 %           0  -0.56    0        0.56;
