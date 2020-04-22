@@ -12,7 +12,7 @@ initVars = who;
 % Variants Conditions
 asbVariantDefinition;
 allocatiom_method=0;   % 0: inv, 1: dir, 2: pro, 3: qp
-controller=1;          % 0: ADRC, 1: ADRC1, 2: PID...
+controller=0;          % 0: ADRC, 1: PID...
 VSS_COMMAND = 3;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
 VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
