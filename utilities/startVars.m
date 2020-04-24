@@ -37,7 +37,6 @@ inertia = [I_x 0 0;0 I_y 0;0 0 I_z];
 d2r=pi/180;
 r2d=180/pi;
 
-
 %% Custom Variables
 % Add your variables here:
 %===========================1旧版====================================
@@ -62,11 +61,12 @@ r2d=180/pi;
 % cmdyaw = timeseries(yaw_d,0:Ts:Ts*(length(yaw_d)-1));
 % cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
 %====================================================================
+%%
 load('cmdroll.mat');
 load('cmdpitch.mat');
 load('cmdyaw.mat');
 load('cmdh.mat');
-
+%%
 if(VSS_COMMAND ==2)
     initDate = [2019 5 1 0 0 0];
     initPosLLA = [113.353891 23.159235 30];
@@ -83,11 +83,13 @@ else
     initEuler = [0 0 0];
     initAngRates = [0 0 0];
 end
-
 global r_sm_X r_sm_Y k_rs_X k_rs_Y k_as_X k_as_Y k_ac_X k_ac_Y k_ra_X k_ra_Y r_m_X r_m_Y e_m_X e_m_Y e_p_X e_p_Y
 
 % function callqpact
-global B umin umax p_limits sw_turb end_time
+global B umin umax p_limits sw_turb end_time filter_switch builder_switch
+end_time=25;% 仿真时间，sec
+filter_switch=1;
+builder_switch=1;
 sw_turb=0;
 p_limits=20;
 umin=[1;1;1;1]*(-p_limits)*pi/180;
@@ -96,10 +98,11 @@ kc1=3.157;% 2.8
 kc2=3.157;% 3.3
 l_1=0.17078793;
 l_2=0.06647954;
+% 初始化控制效率矩阵B
 B=1*[-kc1*l_1    0        kc1*l_1     0;
       0      -kc1*l_1     0        kc1*l_1;
       kc2*l_2   kc2*l_2    kc2*l_2    kc2*l_2];
-end_time=25;% sec
+
 %-------------------r_sm插值表-----------------------------------------------------------
 data1 = load('r_sm.txt');
 r_sm_X=data1(:,1);

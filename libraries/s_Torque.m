@@ -167,8 +167,8 @@ sizes = simsizes;
 
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 6;
-sizes.NumInputs      = 17;
+sizes.NumOutputs     = 3;
+sizes.NumInputs      = 14;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 
@@ -275,7 +275,7 @@ D_z=u(11);
 p=u(12);
 q=u(13);
 r=u(14);
-d=[u(15);u(16);u(17)];
+% d=[u(15);u(16);u(17)];
 %------------------------------------º∆À„∫œ¡¶F-----------------------------------------------
 %------------------------------------------------------------
 V_c= -(w-D_z);
@@ -405,7 +405,7 @@ sys(1:3) = M;
 %           0  -0.56    0        0.56;
 %      0.218   0.218   0.218    0.218];  
 
-sys(4:6)=(M-D_cs*c);
+% sys(4:6)=(M-D_cs*c);
 % sys(4:7) = (V_c+V_i)^2*[k_cs1;k_cs2;k_cs3;k_cs4];
 % 
 
