@@ -12,12 +12,12 @@ initVars = who;
 % Variants Conditions
 asbVariantDefinition;
 allocatiom_method=0;   % 0: inv, 1: dir, 2: pro, 3: qp
-controller=0;          % 0: ADRC, 1: PID...
-VSS_COMMAND = 3;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
+controller=1;          % 0: ADRC, 1: PID...
+VSS_COMMAND = 2;       % 0: Signal builder, 1: Joystick, 2: Pre-saved data, 3: user
 % VSS_SENSORS = 1;       % 0: Feedthrough, 1: Dynamics
 % VSS_VEHICLE = 1;       % 0: Linear Airframe, 1: Nonlinear Airframe.
 % VSS_ENVIRONMENT = 0;   % 0: Constant, 1: Variable
-VSS_VISUALIZATION = 0; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
+VSS_VISUALIZATION = 1; % 0: Scopes, 1: Send values to workspace, 2: FlightGear, 3: Simulink 3D.
 % VSS_ACTUATORS = 0;     % 0: Feedthrough, 1: Linear Second Order, 2: Noninear Second Order
 
 % Bus definitions 
@@ -40,18 +40,18 @@ r2d=180/pi;
 %% Custom Variables
 % Add your variables here:
 %===========================1旧版====================================
-% controlldata = xlsread('controll');
-% rolldata=controlldata(:,1)./(100*r2d)*0.7;
-% pitchdata=controlldata(:,2)./(100*r2d)*0.7;
-% yawdata=controlldata(:,3)./(100*r2d)*0.7;
-% hdata=controlldata(:,4)./(100);
-% cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
-% cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
-% cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
-% cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
+controlldata = load('control.txt');
+rolldata=controlldata(:,1)./(100*r2d)*0.7;
+pitchdata=controlldata(:,2)./(100*r2d)*0.7;
+yawdata=controlldata(:,3)./(100*r2d)*0.7;
+hdata=controlldata(:,4)./(100);
+cmdroll = timeseries(rolldata,0:Ts:Ts*(length(rolldata)-1));
+cmdpitch = timeseries(pitchdata,0:Ts:Ts*(length(pitchdata)-1));
+cmdyaw = timeseries(yawdata,0:Ts:Ts*(length(yawdata)-1));
+cmdh = timeseries(hdata,0:Ts:Ts*(length(hdata)-1));
 
 %===========================2新版结合 testplot.m =====================================
-% data=xlsread('DATAfx13-2_5.xlsx');%10000-15000
+% controlldata = load('DATAfx13-2_5.txt');
 % roll_d=data(10000:15000,4).*d2r/100;
 % pitch_d=data(10000:15000,5).*d2r/100;
 % yaw_d=data(10000:15000,6).*d2r/100;% 实际给定控制
@@ -62,10 +62,10 @@ r2d=180/pi;
 % cmdh = timeseries(h_e,0:Ts:Ts*(length(h_e)-1));%给到仿真中的控制量
 %====================================================================
 %%
-load('cmdroll.mat');
-load('cmdpitch.mat');
-load('cmdyaw.mat');
-load('cmdh.mat');
+% load('cmdroll.mat');
+% load('cmdpitch.mat');
+% load('cmdyaw.mat');
+% load('cmdh.mat');
 %%
 if(VSS_COMMAND ==2)
     initDate = [2019 5 1 0 0 0];

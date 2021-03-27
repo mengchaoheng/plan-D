@@ -27,7 +27,7 @@ function u = qp_ca_sl(arg,B,plim,rlim,T,Wv,Wu,ud,alg,imax,gam,tol)
 % S=pinv(B);
 % S([2 4 6 8 9],:)=P_1;
 % ud=S*v;
-gam=1e5;
+% gam=1e5;
   switch lower(alg)
    case 'sls'
     u = sls_alloc(B+j,v,umin,umax,Wv,Wu,ud,u0,W0,imax);
